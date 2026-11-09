@@ -63,8 +63,23 @@ window.RQ = (() => {
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const dir = snowDir();
+    // Les SVG sont rasterisés une fois dans un petit canvas : dessiner un SVG
+    // à chaque image (60 fois par seconde) coûte cher, surtout sur mobile.
+    function rasterize(img, px = 128) {
+      const c = document.createElement('canvas');
+      c.width = c.height = px;
+      c.getContext('2d').drawImage(img, 0, 0, px, px);
+      return c;
+    }
+
     const images = FLAKES.map((name) => {
       const img = new Image();
+      img.ready = false;
+      img.addEventListener('load', () => {
+        img.sprite = rasterize(img);
+        img.ready = true;
+        if (!raf) draw(0);
+      });
       img.src = new URL(name, dir).href;
       return img;
     });
@@ -115,12 +130,12 @@ window.RQ = (() => {
     function draw(t) {
       ctx.clearRect(0, 0, width, height);
       for (const f of flakes) {
-        if (!f.img.complete || !f.img.naturalWidth) continue;
+        if (!f.img.ready) continue;
         ctx.save();
         ctx.globalAlpha = f.alpha;
         ctx.translate(f.x + Math.sin(t * f.freq + f.phase) * f.amp, f.y);
         ctx.rotate(f.rot);
-        ctx.drawImage(f.img, -f.size / 2, -f.size / 2, f.size, f.size);
+        ctx.drawImage(f.img.sprite, -f.size / 2, -f.size / 2, f.size, f.size);
         ctx.restore();
       }
     }
@@ -152,9 +167,6 @@ window.RQ = (() => {
     }
 
     measure();
-
-    // une première image dès que les SVG sont là, même onglet en arrière-plan
-    images.forEach((img) => img.addEventListener('load', () => { if (!raf) draw(0); }));
 
     if (reduce) {
       // Pas d'animation : une image fixe, redessinée quand les SVG arrivent.
