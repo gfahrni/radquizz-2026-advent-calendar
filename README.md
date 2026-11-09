@@ -133,7 +133,12 @@ commit (`cases/` is versioned — that is what GitHub Pages serves).
 
 ## 4. Create the Google Form
 
-In [forms.google.com](https://forms.google.com), create a form with, in this order:
+**Fastest way:** open <https://script.google.com>, paste
+[tools/create-google-form.gs](tools/create-google-form.gs) into a new project, click **Run**
+and copy the JSON block from the execution log. The script creates the form (same questions
+as below) and prints the `formId` and `entry.…` ids ready for `content/form.json`.
+
+Otherwise, in [forms.google.com](https://forms.google.com), create a form with, in this order:
 
 | # | Question | Type | Required |
 |---|---|---|---|
@@ -351,6 +356,7 @@ tools/serve.mjs             local test server
 tools/make-placeholders.py  regenerate the demo images
 tools/make-snowflakes.py    regenerate the snowfall flakes
 tools/make-og.py            regenerate the LinkedIn preview
+tools/create-google-form.gs  create the answer form from Apps Script
 package.json                site version + scripts
 .nojekyll                   keeps GitHub Pages from running Jekyll
 ```
