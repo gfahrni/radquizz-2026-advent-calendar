@@ -80,7 +80,7 @@
     link.searchParams.set('embedded', 'true');
 
     const prefill = {
-      cas: data.formLabel || data.title || data.id,
+      case: data.formLabel || data.title || data.id,
       participant: state.pid,
     };
     let used = false;

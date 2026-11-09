@@ -1,16 +1,21 @@
 /* =========================================================
-   RadQuizz — feuille de style unique
-   1. Jetons (tokens)        → tout le design se règle ici
-   2. Thèmes                 → classique + noël (ajoutez le vôtre)
+   RadQuizz — single stylesheet
+   1. Tokens                 → the whole design is set here
+   2. Snow
    3. Base / layout
-   4. Chrome (header, onglets)
-   5. Visionneuse d'images
-   6. Zone de réponse + formulaire
+   4. Chrome (header, tabs)
+   5. Image viewer
+   6. Answer area + form
    7. Responsive / a11y / print
+   8. Home: weeks and doors
+   9. Case page
+   10. Footer / misc
+   11. Console scrolling
+   12. Christmas decoration
    ========================================================= */
 
-/* ---------- 1. Jetons ----------
-   Thème unique : Noël. Plus de bascule, tout le design se règle ici. */
+/* ---------- 1. Tokens ----------
+   Single theme: Christmas. No toggle; all the design is set here. */
 :root {
   --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter,
                Roboto, Helvetica, Arial, sans-serif;
@@ -91,9 +96,9 @@ a { color: var(--accent); }
 }
 .skip-link:focus { top: 0; }
 
-/* ---------- 2. Neige ----------
-   Le canvas plein écran est ajouté par theme.js (flocons SVG de
-   assets/neige/) : le CSS ne fait que le caler derrière le contenu. */
+/* ---------- 2. Snow ----------
+   The full-screen canvas is added by theme.js (SVG flakes from
+   assets/neige/); the CSS only places it behind the content. */
 .snow {
   position: fixed;
   inset: 0;
@@ -114,7 +119,7 @@ a { color: var(--accent); }
   border-bottom: 1px solid var(--line);
 }
 
-/* guirlande */
+/* garland */
 .chrome::after {
   content: "";
   position: absolute;
@@ -152,7 +157,7 @@ a { color: var(--accent); }
 .brand-text { font-size: 1.02rem; }
 .brand-text::after { content: " ✦"; color: var(--gold); }
 
-/* rappel de la période, à droite du header */
+/* season reminder, right side of the header */
 .chrome-note {
   margin: 0;
   font-size: .72rem;
@@ -164,7 +169,7 @@ a { color: var(--accent); }
 }
 .chrome-note sup { font-size: .62em; letter-spacing: 0; }
 
-/* Onglets de séries — juste au-dessus de la visionneuse */
+/* Series tabs — just above the viewer */
 .tabs {
   display: flex;
   gap: 6px;
@@ -207,7 +212,7 @@ a { color: var(--accent); }
 }
 .tab[aria-selected="true"] .tab-index { color: var(--accent); }
 
-/* ---------- 5. Contenu ---------- */
+/* ---------- 5. Content ---------- */
 .wrap {
   max-width: var(--max);
   margin: 0 auto;
@@ -380,7 +385,7 @@ a { color: var(--accent); }
 .cta:active { transform: translateY(1px); }
 .cta svg { width: 15px; height: 15px; }
 
-/* ---------- 6. Zone de réponse ---------- */
+/* ---------- 6. Answer area ---------- */
 .answer {
   margin-top: 46px;
   padding-top: 28px;
@@ -453,7 +458,7 @@ a { color: var(--accent); }
 }
 .notice strong { color: var(--ink); }
 
-/* Squelette de chargement */
+/* Loading skeleton */
 .skeleton { display: grid; gap: 14px; }
 .sk {
   border-radius: var(--radius-sm);
@@ -504,7 +509,7 @@ a { color: var(--accent); }
   body { background: #fff; }
 }
 
-/* Correctifs de contraste (thème sombre) */
+/* Contrast fixes (dark theme) */
 .kicker { color: var(--gold); }
 .kicker::before { opacity: .8; }
 .cta { box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 14px 26px -16px rgba(200,16,46,.9); }
@@ -591,7 +596,7 @@ a { color: var(--accent); }
   font-weight: 650;
 }
 .case-card.is-last .case-kicker::after {
-  content: " · à reprendre";
+  content: " · continue";
   color: var(--ink-3);
   font-weight: 500;
   letter-spacing: 0;
@@ -624,7 +629,7 @@ a { color: var(--accent); }
 
 .sk-card { height: 268px; border-radius: var(--radius); }
 
-/* ---------- 9. Page d'un cas ---------- */
+/* ---------- 9. Case page ---------- */
 .case-head h1 {
   font-size: clamp(1.6rem, 1.15rem + 1.7vw, 2.3rem);
   letter-spacing: -.022em;
@@ -666,15 +671,15 @@ a { color: var(--accent); }
 }
 
 
-/* ---------- 11. Défilement « console » ----------
-   Pointeur fin (souris/trackpad) : pas de magnétisme, la molette avance
-   d'une coupe sans transition. Sur écran tactile on garde le snap natif. */
+/* ---------- 11. “Console” scrolling ----------
+   Fine pointer (mouse/trackpad): no snapping, the wheel moves one slice
+   with no transition. Touch screens keep the native snap. */
 @media (hover: hover) and (pointer: fine) {
   .stack { scroll-snap-type: none; }
   .slice { scroll-snap-align: none; scroll-snap-stop: normal; }
 }
 
-/* Ascenseur vertical, à droite de la visionneuse */
+/* Vertical scrubber, right of the viewer */
 .scrub {
   position: absolute;
   top: 14px;
@@ -727,19 +732,19 @@ a { color: var(--accent); }
   .scrub { top: 10px; bottom: 58px; right: 2px; }
 }
 
-/* ---------- 12. Décor de Noël ----------
-   Accents dorés, rubans et cadres : assez festif pour un post LinkedIn,
-   assez sobre pour ne pas gêner la lecture des coupes. */
+/* ---------- 12. Christmas decoration ----------
+   Gold accents, ribbons and frames: festive enough for a LinkedIn post,
+   sober enough not to get in the way of reading the slices. */
 
 ::selection { background: rgba(232, 195, 122, .28); color: var(--ink); }
 
-/* la guirlande du header jette une lueur douce */
+/* the header garland casts a soft glow */
 .chrome {
   box-shadow: 0 1px 0 rgba(232, 195, 122, .07),
               0 16px 34px -30px rgba(232, 195, 122, .55);
 }
 
-/* ornement sous le texte d'introduction */
+/* ornament under the intro text */
 .intro::after {
   content: "❄ ✦ ❄";
   display: block;
@@ -747,19 +752,19 @@ a { color: var(--accent); }
   padding-left: .55em;          /* compense le letter-spacing, pour centrer */
   font-size: .78rem;
   letter-spacing: .55em;
-  text-align: center;           /* l'intro passe en texte à gauche sur mobile */
+  text-align: center;           /* the intro is left-aligned on mobile */
   color: var(--gold);
   opacity: .5;
 }
 
-/* petite étoile après la ligne technique du cas */
+/* small star after the case meta line */
 .case-meta::after {
   content: " ✦";
   color: var(--gold);
   opacity: .55;
 }
 
-/* ruban tricolore en tête de chaque carte */
+/* tricolour ribbon at the top of every card */
 .case-card { position: relative; }
 .case-card::before {
   content: "";
@@ -775,7 +780,7 @@ a { color: var(--accent); }
 .case-card:hover::before { opacity: 1; }
 .case-card:hover { border-color: var(--gold-soft); }
 
-/* cadre doré de la visionneuse : quatre équerres à l'intérieur */
+/* gold frame around the viewer: four corner brackets inside */
 .viewer { border-color: rgba(232, 195, 122, .2); }
 .viewer::before {
   content: "";
@@ -795,7 +800,7 @@ a { color: var(--accent); }
     linear-gradient(var(--gold), var(--gold)) right bottom / 1px 16px no-repeat;
 }
 
-/* filet festif au-dessus de la zone de réponse */
+/* festive rule above the answer area */
 .answer { position: relative; }
 .answer::before {
   content: "";
@@ -809,21 +814,21 @@ a { color: var(--accent); }
   opacity: .75;
 }
 
-/* étiquette du cas */
+/* case tag */
 .answer-tag {
   color: var(--gold);
   background: rgba(232, 195, 122, .07);
   border-color: var(--gold-soft);
 }
 
-/* bouton principal : anneau doré au survol */
+/* main button: gold ring on hover */
 .cta:hover {
   box-shadow: 0 1px 2px rgba(0, 0, 0, .4),
               0 0 0 3px var(--gold-soft),
               0 14px 26px -16px rgba(200, 16, 46, .9);
 }
 
-/* flocon discret en pied de page */
+/* discreet snowflake in the footer */
 .foot::before {
   content: "❄";
   display: block;
@@ -837,7 +842,7 @@ a { color: var(--accent); }
   .chrome-note-long { display: none; }
 }
 
-/* numéro de fenêtre, en pastille sur la vignette */
+/* window number, as a badge on the thumbnail */
 .thumb { position: relative; }
 .door-badge {
   position: absolute;
@@ -856,7 +861,7 @@ a { color: var(--accent); }
   backdrop-filter: blur(6px);
 }
 
-/* fenêtre fermée : papier d'emballage non déballé */
+/* closed window: unopened wrapping paper */
 .case-card.is-locked {
   display: grid;
   place-items: center;
@@ -899,7 +904,7 @@ a { color: var(--accent); }
   letter-spacing: .12em;
 }
 
-/* page d'un cas encore fermé */
+/* page of a case that is still closed */
 .locked-window {
   display: grid;
   place-items: center;

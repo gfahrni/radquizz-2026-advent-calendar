@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Génère les flocons SVG de la neige (assets/neige/).
+Generate the snowflake SVGs used by the snowfall (assets/neige/).
 
     python3 tools/make-snowflakes.py
 
-Chaque fichier contient UN flocon à six branches, cadré au plus juste dans
-un carré de 72 unités. Le canvas de assets/theme.js les redimensionne
-librement (13 à 38 px) : c'est pour ça que le cadre doit être serré, sinon
-les traits deviennent des cheveux à petite taille.
+Each file holds ONE six-branch snowflake, framed as tightly as possible in
+a 72-unit square. The canvas in assets/theme.js scales it freely (13–40 px),
+which is why the frame has to be tight: otherwise the strokes turn into
+hairs at small sizes.
 """
 import math
 from pathlib import Path
@@ -15,14 +15,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets" / "neige"
 
-SIZE = 72          # côté du viewBox
+SIZE = 72          # viewBox side
 CENTER = SIZE / 2
-RADIUS = 27        # rayon du flocon, laisse 9 unités de marge
+RADIUS = 27        # flake radius, leaves 9 units of margin
 STROKE = 2.8
 
 
 def branches(kind, r):
-    """Ramifications d'une branche, en coordonnées locales (branche vers le haut)."""
+    """Branch twigs in local coordinates (branch pointing up)."""
     segments = []
     if kind == 1:
         for frac, length in ((0.44, 0.30), (0.68, 0.22)):

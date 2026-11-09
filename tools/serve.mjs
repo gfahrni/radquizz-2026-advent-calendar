@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Serveur statique minimal pour tester en local.
+ * Minimal static server for local testing.
  *
  *   node tools/serve.mjs        → http://localhost:8000
- *   node tools/serve.mjs 3000   → autre port
+ *   node tools/serve.mjs 3000   → another port
  *
- * Aucune dépendance. Sans ça, ouvrir index.html en double-clic (file://)
- * empêche la lecture des fichiers JSON.
+ * No dependencies. Without it, opening index.html by double-clicking
+ * (file://) blocks reading JSON files.
  */
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
@@ -58,5 +58,5 @@ const server = createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`RadQuizz → http://localhost:${PORT}`);
-  console.log('Ctrl+C pour arrêter.');
+  console.log('Press Ctrl+C to stop.');
 });

@@ -1,323 +1,359 @@
-# RadQuizz
+# RadQuizz — Advent Calendar 2026
 
-**En ligne : <https://gfahrni.github.io/radquizz-2026-advent-calendar/>** — dépôt : <https://github.com/gfahrni/radquizz-2026-advent-calendar>
+**Live: <https://gfahrni.github.io/radquizz-2026-advent-calendar/>** — repository:
+<https://github.com/gfahrni/radquizz-2026-advent-calendar>
 
-Un calendrier de l'Avent radiologique statique. **Un cas = une page**, avec un lien dédié à partager.
-Sur la page, les onglets sont les **séries** de ce cas (axial médiastinal, coronal poumon, …) :
-on fait défiler les coupes, puis on donne son diagnostic en bas de page. La réponse part
-dans un Google Sheet via un Google Form intégré.
+A static radiology advent calendar. **Eight cases over four weeks**, two per week —
+one chest, one cardiovascular. Each case is its own page with a shareable link; the
+tabs on that page are the **series** of the case (axial mediastinal, coronal lung, …).
+Scroll through the slices, then give your diagnosis at the bottom. The answer goes to a
+Google Sheet through an embedded Google Form.
 
-- **0 €**, 0 serveur, 0 base de données, 0 clé API.
-- Une page par cas, avec son titre, sa description et son aperçu LinkedIn.
-- Les réponses sont **préremplies** (cas + identifiant participant) : le participant ne saisit
-  que son diagnostic et ses coordonnées.
-- **Thème de Noël unique** pour l'édition 2026 : guirlande, flocons discrets, accents dorés.
+Windows of future weeks stay **wrapped**: they show a number and the date they open.
+Only open windows are clickable.
+
+- **€0**, no server, no database, no API key.
+- One page per case, with its own title, description and LinkedIn preview.
+- Answers are **prefilled** (case + participant id): the participant only types their
+  diagnosis and details.
+- **Christmas theme only** — garland, gold accents and a discreet snowfall.
 
 ---
 
-## 1. Comment c'est organisé
+## 1. How it is organised
 
 ```
-/images/<cas>/<série>/001.jpg      les coupes
-/content/cases/<cas>.json          la fiche du cas (titre, histoire, séries)
-/cas/<cas>/index.html              page générée, une par cas (ne pas éditer à la main)
-/content/cases.json                index généré pour l'accueil
+/images/<case>/<series>/001.jpg      the slices
+/content/cases/<case>.json           the case file (title, history, series)
+/cases/<case>/index.html             generated page, one per case (do not edit by hand)
+/content/cases.json                  generated index: the weeks and doors of the calendar
 ```
 
-Un cas = un fichier JSON + un dossier d'images par série.
+One case = one JSON file + one image folder per series.
 
 ```json
 {
-  "id": "thorax-01",
-  "title": "Douleur basithoracique droite",
-  "exam": "TDM thoracique, sans injection",
-  "stem": "Femme, 54 ans. Douleur brutale de l'hémithorax droit…",
-  "formLabel": "Cas 1 — Douleur basithoracique droite",
+  "id": "thorax-w1",
+  "week": 1,
+  "theme": "thorax",
+  "open": true,
+  "opensOn": "1 December",
+  "title": "Right basal chest pain",
+  "exam": "CT chest, non-contrast",
+  "stem": "Woman, 54. Sudden right-sided chest pain when coughing…",
+  "formLabel": "Case 1 — Right basal chest pain",
   "series": [
     {
       "id": "axial",
-      "tab": "Axial médiastinal",
-      "note": "Coupes axiales · fenêtre médiastinale · 1 mm",
-      "folder": "images/thorax-01/axial"
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/thorax-w1/axial"
     },
     {
       "id": "coronal",
-      "tab": "Coronal poumon",
-      "note": "Reconstruction coronale · fenêtre parenchymateuse",
-      "folder": "images/thorax-01/coronal"
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/thorax-w1/coronal"
     }
   ]
 }
 ```
 
-- `id` : slug du cas (a-z, 0-9, `-`). Il donne l'URL `…/cas/thorax-01/`. **Ne le changez pas
-  après avoir diffusé le lien.**
-- `formLabel` : la valeur envoyée dans le champ « Cas » du formulaire. C'est votre clé de
-  regroupement dans le Sheet — gardez-la stable.
-- `tab` : le texte court dans l'onglet. `note` : la ligne technique affichée au-dessus des images.
-- Ordre des séries = ordre des onglets.
+- `id`: the case slug (a-z, 0-9, `-`). It gives the URL `…/cases/thorax-w1/`.
+  **Do not change it once the link has been shared.**
+- `week`: 1 to 4. Cases are grouped by week on the home page; within a week, `thorax`
+  is listed before `cardio`.
+- `theme`: `thorax` or `cardio` (displayed as “Thorax” / “Cardiovascular”).
+- `open`: `true` once the window has been opened; `false` keeps it wrapped.
+- `opensOn`: the date shown on a wrapped window (e.g. `8 December`). Required when
+  `open` is `false`.
+- `formLabel`: the value sent in the “Case” field of the form — your grouping key in the
+  Sheet. Keep it stable.
+- `tab`: short text in the tab. `note`: technical line shown above the slices.
+- Series order = tab order.
 
-### Confort de lecture
+### Opening a window
 
-Comportement « console » : le défilement est continu et **instantané**, sans animation
-d'une coupe à l'autre.
+1. Add the real images to `images/<case>/<series>/`.
+2. Set `"open": true` in `content/cases/<case>.json`.
+3. `npm run build`, then commit and push.
 
-- **Molette / trackpad** : une coupe par cran ; les petits mouvements s'accumulent, une
-  geste rapide traverse la pile. En bout de pile, la molette rend la main à la page pour
-  atteindre le formulaire.
-- **Ascenseur à droite** de l'image : cliquer ou glisser pour se déplacer, ou lui donner
-  le focus et utiliser les flèches.
-- **Clavier** sur l'image : ↑ ↓, Page↑ Page↓, Début / Fin.
-- Réglages en haut de `assets/app.js` : `SLICE_STEP` (pixels de molette par coupe, 100)
-  et `PRELOAD` (coupes préchargées de part et d'autre, 4).
+The door becomes clickable on the home page, and its page stops showing the wrapped
+window. Until then the page exists and says “This window is still wrapped.”
 
-Sur écran tactile, on garde le défilement natif aimanté (une coupe à la fois).
+### Reading comfort
+
+Console behaviour: scrolling is continuous and **instant**, with no animation between
+slices.
+
+- **Wheel / trackpad**: one slice per notch; small movements accumulate, a fast gesture
+  crosses the stack. At either end of the stack, the page scrolls so you can reach the form.
+- **Scrubber on the right** of the image: click or drag to move, or focus it and use the
+  arrow keys.
+- **Keyboard** on the image: ↑ ↓, Page↑ Page↓, Home / End.
+- Settings at the top of `assets/app.js`: `SLICE_STEP` (wheel pixels per slice, 100)
+  and `PRELOAD` (slices preloaded on each side, 4).
+
+On touch screens, the native snapped scrolling is kept (one slice at a time).
 
 ---
 
-## 2. Tester en local
+## 2. Test locally
 
 ```bash
 npm start          # → http://localhost:8000
 ```
 
-ou, sans Node : `python3 -m http.server 8000`.
+or, without Node: `python3 -m http.server 8000`.
 
-> N'ouvrez pas `index.html` en double-clic : les navigateurs bloquent la lecture des
-> fichiers JSON en `file://` et la page restera vide.
+> Do not open `index.html` by double-clicking: browsers block JSON files over `file://`
+> and the page stays empty.
 
 ---
 
-## 3. Construire le site
+## 3. Build the site
 
 ```bash
-npm run build      # ou : node tools/build.mjs
+npm run build      # or: node tools/build.mjs
 ```
 
-Le script fait trois choses :
+The script does three things:
 
-1. écrit `images/<cas>/<série>/manifest.json` — le navigateur ne peut pas lister un dossier,
-   c'est donc cette liste qui permet d'afficher les coupes ;
-2. génère `cas/<cas>/index.html` à partir de `_template.html` (titre, description, Open Graph) ;
-3. génère `content/cases.json` pour l'accueil, et affiche le poids total.
+1. writes `images/<case>/<series>/manifest.json` — a browser cannot list a folder, so this
+   list is what makes the slices visible;
+2. generates `cases/<case>/index.html` from `_template.html` (title, description,
+   Open Graph tags);
+3. generates `content/cases.json` for the home page (weeks, doors, numbers) and prints the
+   total weight.
 
-**À relancer après chaque ajout d'images, de cas ou de série**, puis à committer
-(`cas/` est versionné, c'est ce que GitHub Pages sert).
+**Run it after adding images, a case or a series, and after opening a window**, then
+commit (`cases/` is versioned — that is what GitHub Pages serves).
 
 ---
 
-## 4. Créer le Google Form
+## 4. Create the Google Form
 
-Dans [forms.google.com](https://forms.google.com), créez un formulaire avec, dans cet ordre :
+In [forms.google.com](https://forms.google.com), create a form with, in this order:
 
-| # | Question | Type | Obligatoire |
+| # | Question | Type | Required |
 |---|---|---|---|
-| 1 | Diagnostic | **Paragraphe** (texte libre) | oui |
-| 2 | Nom et prénom | Réponse courte | oui |
-| 3 | Email | Réponse courte + validation « adresse e-mail » | oui |
-| 4 | Statut | **Choix multiples** : Junior / Senior | oui |
-| 5 | Cas | Réponse courte — libellé « *(prérempli — ne pas modifier)* » | non |
-| 6 | ID participant | Réponse courte — libellé « *(prérempli — ne pas modifier)* » | non |
+| 1 | Diagnosis | **Paragraph** (free text) | yes |
+| 2 | Name | Short answer | yes |
+| 3 | Email | Short answer + “email address” validation | yes |
+| 4 | Status | **Multiple choice**: Junior / Senior | yes |
+| 5 | Case | Short answer — label “*(prefilled — do not edit)*” | no |
+| 6 | Participant ID | Short answer — label “*(prefilled — do not edit)*” | no |
 
-Les questions 5 et 6 sont remplies automatiquement par la page : elles servent à savoir **qui**
-a répondu à **quel** cas.
+Questions 5 and 6 are filled in by the page: they tell you **who** answered **which** case.
 
-Google Forms n'a pas de champ caché : laissez-les visibles mais à la fin, ça ne gêne personne.
+Google Forms has no hidden field: leave them visible at the end, it does not bother anyone.
 
-Ensuite, onglet **Réponses** → « Associer à une feuille de calcul » → créez le Sheet
-(une ligne par envoi).
+Then, in the **Responses** tab → “Link to Sheets” → create the Sheet (one row per
+submission).
 
-Optionnel : dans le Sheet, **Outils → Paramètres de notification → toute modification →
-notification immédiate** (vous êtes prévenu à chaque réponse, sans add-on).
+Optional: in the Sheet, **Tools → Notification settings → any change → immediate
+notification** (you are warned for every answer, no add-on needed).
 
 ---
 
-## 5. Brancher le formulaire (5 minutes)
+## 5. Connect the form (5 minutes)
 
-### a) L'identifiant du formulaire
+### a) The form id
 
-Bouton **Envoyer → onglet `<>` (intégrer)** : l'URL ressemble à
+**Send → `<>` tab (embed)**: the URL looks like
 
 ```
 https://docs.google.com/forms/d/e/1FAIpQLSdXXXXXXXXXXXXXXXXXXXXXXXXXXXX/viewform?embedded=true
 ```
 
-L'identifiant est la partie entre `/d/e/` et `/viewform`.
+The id is the part between `/d/e/` and `/viewform`.
 
-### b) Les identifiants de champs (`entry.…`)
+### b) The field ids (`entry.…`)
 
-Menu **⋮ → Obtenir le lien prérempli**. Remplissez chaque champ avec une valeur bidon
-(`test`), cliquez **Obtenir le lien**, puis **Copier**.
+Menu **⋮ → Get pre-filled link**. Fill each field with a dummy value (`test`), click
+**Get link**, then **Copy**.
 
-L'URL copiée contient `?entry.123456789=test&entry.987654321=test`. Chaque `entry.…`
-correspond à une question (remplissez un seul champ à la fois pour être sûr de l'ordre),
-puis collez le résultat dans `content/form.json` :
+The copied URL contains `?entry.123456789=test&entry.987654321=test`. Each `entry.…`
+matches one question (fill one field at a time to be sure of the order), then paste the
+result into `content/form.json`:
 
 ```json
 {
   "formId": "1FAIpQLSdXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
   "entries": {
-    "cas": "entry.123456789",
+    "case": "entry.123456789",
     "participant": "entry.987654321"
   }
 }
 ```
 
-Rechargez : le formulaire apparaît en bas de chaque cas, avec le cas et l'ID déjà remplis.
+Reload: the form appears at the bottom of every case, with the case and the participant
+id already filled in.
 
-> Un `entry.…` change si vous **supprimez puis recréez** une question. Le modifier
-> (texte, ordre) ne le change pas.
+> An `entry.…` changes if you **delete and recreate** a question. Editing it (text, order)
+> does not change it.
 
 ---
 
-## 6. Remplacer les images par vos cas
+## 6. Replace the images with your cases
 
-Un dossier par série, images nommées dans l'ordre de défilement :
+One folder per series, images named in scrolling order:
 
 ```
-images/thorax-01/axial/001.jpg, 002.jpg, …
+images/thorax-w1/axial/001.jpg, 002.jpg, …
 ```
 
-1. Supprimez les images de démonstration, déposez les vôtres.
-2. Nommez-les `001.jpg`, `002.jpg`, … (n'importe quel nom dont le tri numérique donne le bon
-   ordre fonctionne : `IMG_1.jpg`, `IMG_2.jpg`, `IMG_10.jpg`).
-3. `npm run build`, puis commit + push.
+1. Delete the demo images, drop in yours.
+2. Name them `001.jpg`, `002.jpg`, … (any name whose natural sort gives the right order
+   works: `IMG_1.jpg`, `IMG_2.jpg`, `IMG_10.jpg`).
+3. `npm run build`, then commit + push.
 
-### Poids des images
-
-Visez **1200–1600 px** de large et **~100–200 Ko** par coupe. Réduction en lot (macOS) :
+The placeholders currently in the repository are generated:
 
 ```bash
-sips -Z 1600 -s formatOptions 80 images/thorax-01/axial/*.jpg
+python3 tools/make-placeholders.py     # synthetic slices for every case
+```
+
+### Image weight
+
+Aim for **1200–1600 px** wide and **~100–200 kB** per slice. Batch resize (macOS):
+
+```bash
+sips -Z 1600 -s formatOptions 80 images/thorax-w1/axial/*.jpg
 npm run build
 ```
 
-Repères GitHub Pages : **1 Go** par site, **~100 Go** de trafic par mois. 40 coupes à 150 Ko
-= 6 Mo par série. Si vous dépassez, passez sur Cloudflare Pages (pas de quota de trafic,
-20 000 fichiers) ou Cloudflare R2 pour les images.
+GitHub Pages limits: **1 GB** per site, **~100 GB** of traffic per month. 40 slices at
+150 kB = 6 MB per series. Beyond that, move to Cloudflare Pages (no traffic quota,
+20,000 files) or Cloudflare R2 for the images.
 
-### Ajouter un cas
+### Add a case
 
-1. `content/cases/mon-cas.json` (copiez-en un et adaptez `id`, `title`, `stem`, `formLabel`).
-2. Les dossiers `images/mon-cas/<série>/` avec les JPG.
-3. `npm run build` → la page `cas/mon-cas/index.html` et l'entrée d'accueil sont créées.
+1. `content/cases/my-case.json` (copy one and adapt `id`, `week`, `theme`, `open`,
+   `title`, `stem`, `formLabel`).
+2. The folders `images/my-case/<series>/` with the JPGs.
+3. `npm run build` → the page `cases/my-case/index.html` is created and the door appears
+   in its week.
 
-### Ajouter une série à un cas existant
+### Add a series to an existing case
 
-Ajoutez un dossier `images/thorax-01/sagittal/` et une entrée dans `series` du JSON du cas,
-puis `npm run build`. L'onglet apparaît automatiquement.
+Add a folder `images/thorax-w1/sagittal/` and an entry in the case JSON `series`, then
+`npm run build`. The tab appears automatically.
 
 ---
 
-## 7. Le thème de Noël
+## 7. The Christmas theme
 
-Plus de bascule : le site est **en thème de Noël en permanence**. Il n'y a ni bouton, ni
-`?theme=noel`, ni mémorisation — `assets/theme.js` applique `data-theme="noel"` au chargement
-et ne fait rien d'autre.
+There is no toggle: the site is **in Christmas theme all the time**. `assets/theme.js`
+applies `data-theme="noel"` on load and does nothing else.
 
-Tout le design tient dans les variables au début de `assets/style.css` (`:root`) : fond vert
-nuit, rouge pour l'action, or pour les accents. Les décorations sont regroupées en fin de
-fichier, section « 12. Décor de Noël » :
+All the design lives in the variables at the top of `assets/style.css` (`:root`):
+night-green background, red for actions, gold for accents. The decorations are grouped at
+the end of the file, section “12. Décor de Noël” (the comments there are in French):
 
-- **neige** : un `<canvas>` plein écran, ajouté par `assets/theme.js`, qui dessine les
-  flocons SVG de `assets/neige/` avec des tailles, positions et rotations aléatoires (les
-  flocons tombent, dérivent latéralement et tournent). Réglages en tête de `theme.js` :
-  `AREA_PER_FLAKE` (densité), `MIN_FLAKES`/`MAX_FLAKES`, `MIN_SIZE`/`MAX_SIZE`. Si le
-  visiteur a demandé « réduire les animations », une image fixe est dessinée à la place.
-  La forme des flocons se régénère avec `python3 tools/make-snowflakes.py` ;
-- **guirlande** du header (`.chrome::after`) et **ruban tricolore** en tête des cartes ;
-- **cadre doré** de la visionneuse (équerres), filet au-dessus de la zone de réponse,
-  ornement sous l'introduction.
+- **snowfall**: a full-screen `<canvas>` added by `assets/theme.js`, drawing the SVG flakes
+  from `assets/neige/` at random sizes, positions and rotations (flakes fall, drift
+  sideways and spin). Settings at the top of `theme.js`: `AREA_PER_FLAKE` (density),
+  `MIN_FLAKES`/`MAX_FLAKES`, `MIN_SIZE`/`MAX_SIZE`. If the visitor asked for “reduce
+  motion”, a still image is drawn instead. The flake shapes are regenerated with
+  `python3 tools/make-snowflakes.py`;
+- **garland** under the header (`.chrome::after`) and a **tricolour ribbon** at the top of
+  every card;
+- **gold frame** around the viewer (corner brackets), a festive rule above the answer
+  area, an ornament under the intro.
 
-L'aperçu LinkedIn (`assets/og-image.png`, 1200×630) est généré, pas dessiné à la main :
+The LinkedIn preview (`assets/og-image.png`, 1200×630) is generated, not hand-drawn:
 
 ```bash
-python3 tools/make-og.py     # relancer si le titre ou la période changent
+python3 tools/make-og.py     # rerun if the title or the dates change
 ```
 
-**Le formulaire, lui, ne suit pas le thème** : c'est un iframe Google, impossible à styler
-depuis la page. Pour éviter le contraste, changez aussi sa palette dans Google Forms
-(icône palette). Même formulaire, même Sheet.
+**The form itself does not follow the theme**: it is a Google iframe, impossible to style
+from the page. To avoid the contrast, change its palette in Google Forms too (palette
+icon). Same form, same Sheet.
 
 ---
 
-## 8. Déployer, mettre à jour, versionner
+## 8. Deploy, update, version
 
-Première mise en ligne (déjà faite pour ce dépôt) :
+First deployment (already done for this repository):
 
 ```bash
 git init && git add . && git commit -m "RadQuizz"
-gh repo create radquizz --public --source=. --push
-gh api -X POST repos/<compte>/radquizz/pages -f 'source[branch]=main' -f 'source[path]=/'
+gh repo create radquizz-2026-advent-calendar --public --source=. --push
+gh api -X POST repos/<account>/radquizz-2026-advent-calendar/pages \
+  -f 'source[branch]=main' -f 'source[path]=/'
 ```
 
-Mises à jour :
+Updates:
 
 ```bash
-npm run build && git add . && git commit -m "Nouveau cas" && git push
+npm run build && git add . && git commit -m "New case" && git push
 ```
 
-La version vit dans `package.json` (`version`), est injectée dans les pages au build et
-affichée en pied de page. Le build ajoute aussi `?v=<version>` aux fichiers CSS et JS :
-à chaque nouveau numéro de version, leur cache navigateur est invalidé automatiquement. Pour publier une version :
+The version lives in `package.json` (`version`), is injected into the pages at build time
+and shown in the footer. The build also appends `?v=<version>` to the CSS and JS files:
+every new version number invalidates their browser cache automatically. To publish a
+version:
 
 ```bash
-npm version 0.2.0 --no-git-tag-version
+npm version 0.6.0 --no-git-tag-version
 npm run build
-git add . && git commit -m "v0.2.0"
-git tag v0.2.0 && git push && git push --tags
+git add . && git commit -m "v0.6.0"
+git tag v0.6.0 && git push && git push --tags
 ```
 
-> ⚠️ Le dépôt est **public** : les images sont téléchargeables par n'importe qui.
-> Anonymisez les DICOM avant export (nom, date, numéro de dossier, annotations incrustées,
-> nom du fichier) et évitez les cas identifiants sans accord.
+> ⚠️ The repository is **public**: anyone can download the images. Anonymise the DICOMs
+> before export (name, date, record number, burnt-in annotations, file name) and avoid
+> identifying cases without consent.
 
 ---
 
-## 9. Dépannage
+## 9. Troubleshooting
 
-| Symptôme | Cause probable |
+| Symptom | Likely cause |
 |---|---|
-| Page vide, spinner infini | Ouverture en `file://` → lancez `npm start` |
-| Accueil vide / « aucun cas » | `npm run build` pas lancé (génère `content/cases.json`) |
-| 404 sur `/cas/mon-cas/` | `npm run build` pas relancé après création du JSON |
-| Aucune image, message « Aucune coupe » | `manifest.json` absent → `npm run build` |
-| Anciennes séries encore visibles | `cas/<vieux-cas>/` traîne : supprimez le dossier et rebuild |
-| Formulaire blanc / vide | `formId` faux, formulaire restreint, ou bloqueur de cookies |
-| Double barre de défilement dans le formulaire | Ajustez `height` de `.form-shell iframe` dans `assets/style.css` (1200 px desktop / 1560 px mobile) |
-| Les réponses n'arrivent pas dans le Sheet | onglet Réponses → vérifiez la feuille ; formulaire « Tout le monde disposant du lien » |
-| Une mise à jour n'apparaît pas | cache navigateur : GitHub Pages envoie `cache-control: max-age=600`. Rechargez avec `Cmd/Ctrl + Shift + R`, ou attendez 10 min. Vider les cookies ne sert à rien. |
+| Empty page, endless spinner | Opened over `file://` → run `npm start` |
+| Empty home page / “No cases published yet” | `npm run build` not run (generates `content/cases.json`) |
+| 404 on `/cases/my-case/` | `npm run build` not run after creating the JSON |
+| No images, “No slices for this series” | Missing `manifest.json` → `npm run build` |
+| A wrapped window still shows old content | `"open": true` set but no rebuild |
+| Old series still visible | Stale folder under `cases/`: delete it and rebuild |
+| Blank form | Wrong `formId`, restricted form, or cookie blocker |
+| Double scrollbar inside the form | Adjust `.form-shell iframe` `height` in `assets/style.css` (1200 px desktop / 1560 px mobile) |
+| Answers do not reach the Sheet | Responses tab → check the Sheet; form must be “Anyone with the link” |
+| An update does not show up | Browser cache: GitHub Pages sends `cache-control: max-age=600`. Reload with `Cmd/Ctrl + Shift + R`, or wait 10 minutes. Clearing cookies does nothing. |
 
 ---
 
 ## 10. Structure
 
 ```
-index.html                  accueil : liste des cas
-_template.html              gabarit d'une page de cas (édité par le build)
-cas/<cas>/index.html        pages générées, une par cas
+index.html                  home: the weeks and doors of the calendar
+_template.html              template of a case page (edited by the build)
+cases/<case>/index.html     generated pages, one per case
 
-assets/style.css            design + thèmes (variables CSS)
-assets/theme.js             thème unique (Noël) + stockage local partagé
-assets/app.js               page de cas : séries, pile d'images, formulaire
-assets/home.js              accueil : grille des cas
-assets/og-image.png         aperçu LinkedIn de l'accueil (1200×630)
+assets/style.css            design + Christmas decorations (CSS variables)
+assets/theme.js             single theme + snowfall + shared local storage
+assets/app.js               case page: series, image stack, form
+assets/home.js              home: weeks, open doors, wrapped windows
+assets/neige/               the three snowflake SVGs (generated)
+assets/og-image.png         LinkedIn preview of the home page (1200×630)
 
-content/cases/<cas>.json    ← à éditer : les cas
-content/cases.json          généré : index de l'accueil
-content/form.json           ← à éditer : identifiant du Google Form
+content/cases/<case>.json   ← to edit: the cases
+content/cases.json          generated: weeks and doors for the home page
+content/form.json           ← to edit: the Google Form id
 
-images/<cas>/<série>/       les coupes + manifest.json généré
-assets/neige/               les trois flocons SVG (générés)
+images/<case>/<series>/     the slices + generated manifest.json
 
 tools/build.mjs             manifest + pages + index
-tools/serve.mjs             serveur local de test
-tools/make-placeholders.py  régénère les images de démonstration
-tools/make-og.py            régénère l'aperçu LinkedIn (thème de Noël)
-tools/make-snowflakes.py    régénère les flocons de la neige
-package.json                version du site + scripts
-.nojekyll                   évite le traitement Jekyll par GitHub Pages
+tools/serve.mjs             local test server
+tools/make-placeholders.py  regenerate the demo images
+tools/make-snowflakes.py    regenerate the snowfall flakes
+tools/make-og.py            regenerate the LinkedIn preview
+package.json                site version + scripts
+.nojekyll                   keeps GitHub Pages from running Jekyll
 ```
 
-JavaScript sans dépendance ni étape de build : ce que vous poussez sur GitHub est
-exactement ce qui est servi.
+JavaScript with no dependencies and no build step: what you push to GitHub is exactly what
+is served.

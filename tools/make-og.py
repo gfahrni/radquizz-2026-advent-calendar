@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Génère l'aperçu LinkedIn du site : assets/og-image.png (1200 x 630).
+Generate the LinkedIn preview of the site: assets/og-image.png (1200 x 630).
 
     python3 tools/make-og.py
 
-Le rendu suit le thème de Noël : fond vert nuit, guirlande, flocon doré,
-titre en serif. À relancer après un changement de nom ou de période.
+The result follows the Christmas theme: night-green background, garland,
+gold snowflake, serif title. Rerun it when the title or the dates change.
 """
 import math
 import random
@@ -37,7 +37,7 @@ def font(path, size):
 
 
 def background():
-    """Dégradé vertical + halo vert en haut du cadre."""
+    """Vertical gradient plus a green glow at the top of the frame."""
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
     t = (yy / (H - 1)) ** 0.85
     img = np.zeros((H, W, 3), dtype=np.float32)
@@ -54,7 +54,7 @@ def background():
 
 
 def garland(draw):
-    """Bande de guirlande en haut : rouge / or / vert."""
+    """Garland strip along the top: red / gold / green."""
     seg, gap, height = 22 * SS, 6 * SS, 10 * SS
     palette = [RED, GOLD, GREEN]
     x = 0
@@ -66,7 +66,7 @@ def garland(draw):
 
 
 def snow(draw):
-    """Flocons discrets, répartis de façon reproductible."""
+    """Discreet flakes, spread reproducibly."""
     rng = random.Random(20261201)
     for _ in range(110):
         x = rng.uniform(0, W) * SS
@@ -77,7 +77,7 @@ def snow(draw):
 
 
 def snowflake(draw, cx, cy, r, color, width):
-    """Flocon à six branches, avec deux petites ramifications par branche."""
+    """Six-branch snowflake, with two small twigs per branch."""
     for k in range(6):
         a = math.radians(60 * k - 90)
         ex, ey = cx + r * math.cos(a), cy + r * math.sin(a)
@@ -93,7 +93,7 @@ def snowflake(draw, cx, cy, r, color, width):
 
 
 def tracked(draw, xy, text, fnt, fill, tracking):
-    """Écrit du texte avec un interlettrage, et renvoie la largeur totale."""
+    """Draw text with letter-spacing and return the total width."""
     total = sum(draw.textlength(c, font=fnt) for c in text) + tracking * (len(text) - 1)
     x, y = xy
     for c in text:
@@ -112,32 +112,32 @@ def main():
 
     cx = W * SS / 2
 
-    # flocon doré, avec un cœur rouge
+    # gold snowflake with a red heart
     snowflake(draw, cx, 150 * SS, 44 * SS, GOLD + (235,), 2 * SS)
     draw.ellipse([cx - 5 * SS, 145 * SS, cx + 5 * SS, 155 * SS], fill=RED + (255,))
 
-    # titre
+    # title
     f_title = font(SERIF, 96)
     title = "RadQuizz"
     tw = draw.textlength(title, font=f_title)
     draw.text((cx - tw / 2, 218 * SS), title, font=f_title, fill=INK)
 
-    # filet
+    # thin rule
     draw.rectangle([cx - 34 * SS, 358 * SS, cx + 34 * SS, 360 * SS], fill=GOLD + (200,))
 
-    # surtitre
+    # kicker
     f_kick = font(SANS, 27)
-    kick = "CALENDRIER DE L'AVENT 2026"
+    kick = "ADVENT CALENDAR 2026"
     kw = sum(draw.textlength(c, font=f_kick) for c in kick)
     tracked(draw, (cx - kw / 2, 392 * SS), kick, f_kick, GOLD + (255,), 4 * SS)
 
-    # sous-titre
+    # subtitle
     f_sub = font(SANS, 25)
-    sub = "Un cas radiologique par jour  ·  1er – 24 décembre"
+    sub = "Two radiology cases a week  ·  1–28 December"
     sw = draw.textlength(sub, font=f_sub)
     draw.text((cx - sw / 2, 452 * SS), sub, font=f_sub, fill=MUTED + (255,))
 
-    # adresse du site, discrète
+    # site address, discreet
     f_url = font(SANS, 18)
     url = "gfahrni.github.io/radquizz-2026-advent-calendar"
     uw = draw.textlength(url, font=f_url)

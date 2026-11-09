@@ -1,9 +1,9 @@
 /* =========================================================
-   Thème unique (Noël), neige et petits utilitaires partagés.
-   Chargé avant app.js / home.js.
+   Single theme (Christmas), snowfall and small shared helpers.
+   Loaded before app.js / home.js.
 
-   Le calendrier de l'Avent n'a qu'une seule apparence : plus de
-   bascule, plus de mémorisation, plus de ?theme=…
+   The advent calendar has one single look: no toggle, no memory,
+   no ?theme=…
    ========================================================= */
 window.RQ = (() => {
   'use strict';
@@ -11,7 +11,7 @@ window.RQ = (() => {
   const THEME = 'noel';
   const THEME_COLOR = '#0f1d16';
 
-  /* ---------------- Stockage local ---------------- */
+  /* ---------------- Local storage ---------------- */
 
   const store = {
     get(key, fallback) {
@@ -21,27 +21,27 @@ window.RQ = (() => {
       } catch { return fallback; }
     },
     set(key, value) {
-      try { localStorage.setItem('rq.' + key, JSON.stringify(value)); } catch { /* mode privé */ }
+      try { localStorage.setItem('rq.' + key, JSON.stringify(value)); } catch { /* private mode */ }
     },
   };
 
-  /* ---------------- Neige ----------------
-     Un canvas plein écran, dessiné avec les flocons SVG de assets/neige/.
-     Les flocons tombent, dérivent latéralement et tournent : un simple
-     décalage de motif répété se verrait tout de suite.
-     Couleurs, tailles et densité se règlent avec les constantes ci-dessous.
+  /* ---------------- Snowfall ----------------
+     A full-screen canvas drawn with the SVG flakes from assets/neige/.
+     Flakes fall, drift sideways and spin: a simple offset repeated
+     pattern would be spotted immediately.
+     Size, density and opacity are set by the constants below.
      ------------------------------------------------- */
 
   const FLAKES = ['flocon-1.svg', 'flocon-2.svg', 'flocon-3.svg'];
-  const AREA_PER_FLAKE = 24000;   // 1 flocon pour ~24 000 px² d'écran
+  const AREA_PER_FLAKE = 24000;   // one flake per ~24,000 px² of screen
   const MIN_FLAKES = 24;
   const MAX_FLAKES = 70;
-  const MIN_SIZE = 15;            // diamètre, en px
+  const MIN_SIZE = 15;            // diameter, in px
   const MAX_SIZE = 40;
 
   function snowDir() {
-    // initSnow() est appelé depuis app.js / home.js : on retrouve le chemin
-    // de theme.js dans le DOM plutôt que via document.currentScript.
+    // initSnow() is called from app.js / home.js: find the theme.js path
+    // in the DOM instead of relying on document.currentScript.
     const here = document.currentScript;
     const el = (here && /theme\.js/.test(here.src || ''))
       ? here
@@ -51,7 +51,7 @@ window.RQ = (() => {
   }
 
   function initSnow() {
-    if (document.querySelector('.snow')) return;   // déjà lancé
+    if (document.querySelector('.snow')) return;   // already running
 
     const canvas = document.createElement('canvas');
     canvas.className = 'snow';
@@ -63,8 +63,8 @@ window.RQ = (() => {
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const dir = snowDir();
-    // Les SVG sont rasterisés une fois dans un petit canvas : dessiner un SVG
-    // à chaque image (60 fois par seconde) coûte cher, surtout sur mobile.
+    // SVGs are rasterised once into a small canvas: drawing an SVG on every
+    // frame (60 times per second) is expensive, especially on mobile.
     function rasterize(img, px = 128) {
       const c = document.createElement('canvas');
       c.width = c.height = px;
@@ -100,7 +100,7 @@ window.RQ = (() => {
         y: spread ? rnd(0, height) : -size,
         size,
         vy: rnd(11, 32),                 // px/s
-        amp: rnd(5, 20),                 // dérive latérale, px
+        amp: rnd(5, 20),                 // sideways drift, px
         freq: rnd(0.12, 0.42),           // rad/s
         phase: rnd(0, Math.PI * 2),
         rot: rnd(0, Math.PI * 2),
@@ -169,7 +169,7 @@ window.RQ = (() => {
     measure();
 
     if (reduce) {
-      // Pas d'animation : une image fixe, redessinée quand les SVG arrivent.
+      // No animation: a still image, redrawn when the SVGs arrive.
       images.forEach((img) => img.addEventListener('load', () => draw(0)));
       draw(0);
     } else {
@@ -181,7 +181,7 @@ window.RQ = (() => {
     }
   }
 
-  /* ---------------- Thème ---------------- */
+  /* ---------------- Theme ---------------- */
 
   function initTheme() {
     document.documentElement.dataset.theme = THEME;

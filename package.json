@@ -1,8 +1,8 @@
 {
   "name": "radquizz",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
-  "description": "Quiz radiologique statique : un cas par page, plusieurs séries par cas, réponses via Google Form.",
+  "description": "Static radiology advent calendar: eight cases, two per week, answers via Google Form.",
   "homepage": "https://gfahrni.github.io/radquizz-2026-advent-calendar/",
   "type": "module",
   "scripts": {
