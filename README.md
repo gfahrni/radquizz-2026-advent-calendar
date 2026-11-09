@@ -1,6 +1,6 @@
 # RadQuizz
 
-**En ligne : <https://gfahrni.github.io/radquizz/>** — dépôt : <https://github.com/gfahrni/radquizz>
+**En ligne : <https://gfahrni.github.io/radquizz-2026-advent-calendar/>** — dépôt : <https://github.com/gfahrni/radquizz-2026-advent-calendar>
 
 Un quiz radiologique statique. **Un cas = une page**, avec un lien dédié à partager.
 Sur la page, les onglets sont les **séries** de ce cas (axial médiastinal, coronal poumon, …) :
