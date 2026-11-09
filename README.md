@@ -249,7 +249,7 @@ applies `data-theme="noel"` on load and does nothing else.
 
 All the design lives in the variables at the top of `assets/style.css` (`:root`):
 night-green background, red for actions, gold for accents. The decorations are grouped at
-the end of the file, section “12. Décor de Noël” (the comments there are in French):
+the end of the file, section “12. Christmas decoration”:
 
 - **snowfall**: a full-screen `<canvas>` added by `assets/theme.js`, drawing the SVG flakes
   from `assets/neige/` at random sizes, positions and rotations (flakes fall, drift
