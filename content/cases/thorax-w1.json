@@ -1,0 +1,25 @@
+{
+  "id": "thorax-w1",
+  "week": 1,
+  "theme": "thorax",
+  "open": true,
+  "opensOn": "1 December",
+  "title": "Right basal chest pain",
+  "exam": "CT chest, non-contrast",
+  "stem": "Woman, 54. Sudden right-sided chest pain when coughing, mild dyspnoea, reduced breath sounds at the right base. No fever, no relevant history.",
+  "formLabel": "Case 1 — Right basal chest pain",
+  "series": [
+    {
+      "id": "axial",
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/thorax-w1/axial"
+    },
+    {
+      "id": "coronal",
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/thorax-w1/coronal"
+    }
+  ]
+}

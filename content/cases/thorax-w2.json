@@ -1,0 +1,25 @@
+{
+  "id": "thorax-w2",
+  "week": 2,
+  "theme": "thorax",
+  "open": false,
+  "opensOn": "8 December",
+  "title": "Fever and productive cough",
+  "exam": "CT chest, with contrast",
+  "stem": "Woman, 41. High fever and productive cough for five days, right-sided pleuritic pain. CRP 180 mg/L, leucocytes 16 G/L.",
+  "formLabel": "Case 3 — Fever and productive cough",
+  "series": [
+    {
+      "id": "axial",
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/thorax-w2/axial"
+    },
+    {
+      "id": "coronal",
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/thorax-w2/coronal"
+    }
+  ]
+}

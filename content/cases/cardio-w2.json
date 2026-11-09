@@ -1,0 +1,25 @@
+{
+  "id": "cardio-w2",
+  "week": 2,
+  "theme": "cardio",
+  "open": false,
+  "opensOn": "8 December",
+  "title": "Exertional dyspnoea",
+  "exam": "Cardiac CT",
+  "stem": "Man, 67. Progressive exertional dyspnoea over three months. Systolic murmur at the base. History of hypertension.",
+  "formLabel": "Case 4 — Exertional dyspnoea",
+  "series": [
+    {
+      "id": "axial",
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/cardio-w2/axial"
+    },
+    {
+      "id": "coronal",
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/cardio-w2/coronal"
+    }
+  ]
+}

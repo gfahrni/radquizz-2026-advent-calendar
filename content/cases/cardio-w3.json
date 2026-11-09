@@ -1,0 +1,25 @@
+{
+  "id": "cardio-w3",
+  "week": 3,
+  "theme": "cardio",
+  "open": false,
+  "opensOn": "15 December",
+  "title": "Syncope on exertion",
+  "exam": "CT pulmonary angiography",
+  "stem": "Woman, 49. Syncope while climbing stairs, no prodrome, no chest pain. Mild hypoxia at rest.",
+  "formLabel": "Case 6 — Syncope on exertion",
+  "series": [
+    {
+      "id": "axial",
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/cardio-w3/axial"
+    },
+    {
+      "id": "coronal",
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/cardio-w3/coronal"
+    }
+  ]
+}

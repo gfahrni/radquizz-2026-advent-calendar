@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Génère les images factices (« placeholders ») de démonstration.
+Generate the placeholder slices used for development.
 
     python3 tools/make-placeholders.py
 
-Ce ne sont PAS des radiographies : juste des coupes synthétiques sombres qui
-permettent de tester le défilement et les onglets. Remplacez les dossiers
-images/<cas>/<série>/ par vos propres JPG (001.jpg, 002.jpg, …) puis relancez
+These are NOT radiographs: just synthetic dark slices so the scroller,
+tabs and thumbnails can be tested. Replace the folders under
+images/<case>/<series>/ with your own JPGs (001.jpg, 002.jpg, …) and run
 `npm run build`.
 """
 import math
@@ -19,14 +19,19 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 ROOT = Path(__file__).resolve().parent.parent
 SIZE = 900
 
-# cas -> [(id de série, plan, nombre de coupes)]
+# case -> [(series id, plane, number of slices)]
 CASES = {
-    "thorax-01": [("axial", "axial", 26), ("coronal", "coronal", 16)],
-    "abdomen-01": [("axial", "axial", 22), ("coronal", "coronal", 14)],
-    "cerveau-01": [("axial", "axial", 16), ("sagittal", "sagittal", 12)],
+    "thorax-w1": [("axial", "axial", 8), ("coronal", "coronal", 8)],
+    "cardio-w1": [("axial", "axial", 8), ("coronal", "coronal", 8)],
+    "thorax-w2": [("axial", "axial", 8), ("coronal", "coronal", 8)],
+    "cardio-w2": [("axial", "axial", 8), ("coronal", "coronal", 8)],
+    "thorax-w3": [("axial", "axial", 8), ("coronal", "coronal", 8)],
+    "cardio-w3": [("axial", "axial", 8), ("coronal", "coronal", 8)],
+    "thorax-w4": [("axial", "axial", 8), ("coronal", "coronal", 8)],
+    "cardio-w4": [("axial", "axial", 8), ("coronal", "coronal", 8)],
 }
 
-# rayons du « corps » selon le plan de coupe
+# body radii per plane
 BODY = {
     "axial": (360, 285),
     "coronal": (268, 352),
@@ -52,14 +57,14 @@ def font(size):
 
 def make_slice(index: int, total: int, seed: int, plane: str) -> Image.Image:
     rng = np.random.default_rng(seed)
-    t = index / max(1, total - 1)              # 0 → 1 le long de la pile
+    t = index / max(1, total - 1)              # 0 → 1 along the stack
     y, x = np.mgrid[0:SIZE, 0:SIZE].astype(np.float32)
     cx = cy = SIZE / 2
     rx, ry = BODY[plane]
 
     body = np.exp(-(((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2) ** 1.35)
 
-    # deux structures internes qui grossissent puis rétrécissent
+    # two inner structures growing then shrinking
     grow = 0.55 + 0.45 * math.sin(math.pi * t)
     inner = np.zeros_like(body)
     for sign in (-1, 1):
@@ -68,7 +73,7 @@ def make_slice(index: int, total: int, seed: int, plane: str) -> Image.Image:
         inner += np.exp(-(((x - ix) / (rx * 0.26 * grow)) ** 2 +
                           ((y - iy) / (ry * 0.52 * grow)) ** 2) ** 1.6)
 
-    # une « lésion » qui se déplace lentement
+    # a slow-moving "lesion"
     px = cx + rx * 0.17 * math.cos(2 * math.pi * t)
     py = cy + ry * 0.14 * math.sin(2 * math.pi * t)
     spot = np.exp(-(((x - px) / 46) ** 2 + ((y - py) / 46) ** 2) ** 1.5)
@@ -93,7 +98,7 @@ def make_slice(index: int, total: int, seed: int, plane: str) -> Image.Image:
     draw = ImageDraw.Draw(img)
 
     draw.text((26, SIZE - 46), f"{index + 1:02d} / {total:02d}", font=font(19), fill=(150, 160, 172))
-    draw.text((26, SIZE - 72), "IMAGE DE DÉMONSTRATION", font=font(14), fill=(96, 104, 114))
+    draw.text((26, SIZE - 72), "DEMO IMAGE", font=font(14), fill=(96, 104, 114))
     draw.text((30, 24), "R", font=font(20), fill=(150, 160, 172))
     draw.text((SIZE - 46, 24), "L", font=font(20), fill=(150, 160, 172))
 
@@ -112,7 +117,7 @@ def main() -> None:
                 img = make_slice(i, count, seed=1000 * (case_index + 1) + 7 * serie_index, plane=plane)
                 img.save(folder / f"{i + 1:03d}.jpg", "JPEG", quality=78, optimize=True, progressive=True)
             size = sum(f.stat().st_size for f in folder.iterdir() if f.suffix == ".jpg")
-            print(f"✓ images/{case_id}/{serie_id:<9} {count:>3} coupes · {size / 1024 / 1024:.1f} Mo")
+            print(f"✓ images/{case_id}/{serie_id:<9} {count:>3} slices · {size / 1024 / 1024:.1f} MB")
 
 
 if __name__ == "__main__":

@@ -1,33 +1,33 @@
 <!doctype html>
-<html lang="fr" data-theme="noel">
+<html lang="en" data-theme="noel">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>RadQuizz — calendrier de l'Avent 2026</title>
-<meta name="description" content="Un cas radiologique par jour, du 1er au 24 décembre. Faites défiler les coupes, donnez votre diagnostic.">
+<title>RadQuizz — Advent Calendar 2026</title>
+<meta name="description" content="Eight radiology cases, one chest and one cardiovascular each week of December. Scroll the slices, give your diagnosis.">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gfahrni.github.io/radquizz-2026-advent-calendar/">
 <meta property="og:site_name" content="RadQuizz">
-<meta property="og:title" content="RadQuizz — calendrier de l'Avent 2026">
-<meta property="og:description" content="Un cas radiologique par jour jusqu'à Noël. Parcourez les coupes, donnez votre diagnostic. 2 minutes par cas.">
+<meta property="og:title" content="RadQuizz — Advent Calendar 2026">
+<meta property="og:description" content="Two radiology cases a week until Christmas. Scroll the slices, give your diagnosis. 2 minutes per case.">
 <meta property="og:image" content="https://gfahrni.github.io/radquizz-2026-advent-calendar/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:locale" content="fr_CH">
+<meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 
 <meta name="theme-color" content="#0f1d16" id="meta-theme-color">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230f1d16'/%3E%3Cg stroke='%23e8c37a' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='2.2' fill='%23c8102e'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css?v=0.4.2">
+<link rel="stylesheet" href="assets/style.css?v=0.5.0">
 </head>
 <body data-page="index" data-base="">
 
-<a class="skip-link" href="#cases">Aller à la liste des cas</a>
+<a class="skip-link" href="#cases">Skip to the cases</a>
 
 <div class="chrome">
   <div class="chrome-inner">
-    <a class="brand" href="./" aria-label="RadQuizz, accueil">
+    <a class="brand" href="./" aria-label="RadQuizz, home">
       <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.3"/>
         <path d="M12 1.8v4M12 18.2v4M1.8 12h4M18.2 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
@@ -36,22 +36,21 @@
       <span class="brand-text">RadQuizz</span>
     </a>
 
-    <p class="chrome-note"><span class="chrome-note-long">Calendrier de l'Avent · </span>1<sup>er</sup> – 24 décembre</p>
+    <p class="chrome-note"><span class="chrome-note-long">Advent calendar · </span>1–28 December</p>
   </div>
 </div>
 
 <main class="wrap" id="main">
 
   <header class="intro">
-    <p class="kicker">Calendrier de l'Avent 2026</p>
-    <h1>Un cas par jour</h1>
-    <p class="lede">Du 1<sup>er</sup> au 24 décembre, un cas radiologique à parcourir coupe par coupe,
-      comme sur une console. Deux minutes pour donner votre diagnostic, en bas de chaque page.</p>
+    <p class="kicker">Advent Calendar 2026</p>
+    <h1>Two cases a week</h1>
+    <p class="lede">Eight radiology cases — one chest, one cardiovascular every week of December.
+      Scroll the slices like on a console, then give your diagnosis at the bottom of the page.</p>
   </header>
 
-  <div class="cases" id="cases">
+  <div class="weeks" id="cases">
     <div class="skeleton" aria-hidden="true">
-      <div class="sk sk-card"></div>
       <div class="sk sk-card"></div>
       <div class="sk sk-card"></div>
     </div>
@@ -60,11 +59,11 @@
 </main>
 
 <footer class="foot">
-  <p>RadQuizz <span class="version" id="version"></span> — à visée pédagogique uniquement.</p>
-  <noscript><p class="warn">Cette page a besoin de JavaScript pour lister les cas.</p></noscript>
+  <p>RadQuizz <span class="version" id="version"></span> — for educational purposes only.</p>
+  <noscript><p class="warn">This page needs JavaScript to list the cases.</p></noscript>
 </footer>
 
-<script src="assets/theme.js?v=0.4.2" defer></script>
-<script src="assets/home.js?v=0.4.2" defer></script>
+<script src="assets/theme.js?v=0.5.0" defer></script>
+<script src="assets/home.js?v=0.5.0" defer></script>
 </body>
 </html>

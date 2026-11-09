@@ -1,0 +1,25 @@
+{
+  "id": "cardio-w4",
+  "week": 4,
+  "theme": "cardio",
+  "open": false,
+  "opensOn": "22 December",
+  "title": "Palpitations",
+  "exam": "Coronary CT angiography",
+  "stem": "Man, 45. Episodes of palpitations at rest for one month. Sinus rhythm on ECG, no chest pain.",
+  "formLabel": "Case 8 — Palpitations",
+  "series": [
+    {
+      "id": "axial",
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/cardio-w4/axial"
+    },
+    {
+      "id": "coronal",
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/cardio-w4/coronal"
+    }
+  ]
+}

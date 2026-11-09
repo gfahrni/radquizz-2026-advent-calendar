@@ -1,8 +1,8 @@
 /* =========================================================
-   Page d'un cas.
-   - 1 page = 1 cas ; les onglets = les séries (axial, coronal, …)
-   - pile d'images scrollable (scroll-snap natif)
-   - formulaire Google intégré, prérempli (cas + id participant)
+   Case page.
+   - one page = one case; the tabs are its series (axial, coronal, …)
+   - scrollable image stack (native scroll-snap)
+   - embedded Google Form, prefilled (case + participant id)
    ========================================================= */
 (() => {
   'use strict';
@@ -28,7 +28,7 @@
     pid: participantId(),
   };
 
-  /* ---------------- Identité participant ---------------- */
+  /* ---------------- Participant identity ---------------- */
 
   function participantId() {
     let pid = store.get('pid', null);
@@ -40,7 +40,7 @@
     return pid;
   }
 
-  /* ---------------- Données ---------------- */
+  /* ---------------- Data ---------------- */
 
   async function getJSON(path) {
     const res = await fetch(url(path), { cache: 'no-cache' });
@@ -64,7 +64,7 @@
   const imageUrl = (serie, file) =>
     url(String(serie.folder).replace(/\/+$/, '') + '/' + encodeURIComponent(file));
 
-  /* ---------------- Formulaire ---------------- */
+  /* ---------------- Form ---------------- */
 
   function buildFormSrc(data) {
     const { formId, entries = {} } = state.form;
@@ -102,25 +102,25 @@
       const box = document.createElement('div');
       box.className = 'form-placeholder';
       box.innerHTML = `
-        <p class="ph-title">Formulaire non branché (c'est normal au premier lancement)</p>
-        <p>Créez votre Google Form, puis renseignez son identifiant dans
-           <code>content/form.json</code> :</p>
-        <p><code>{ "formId": "1FAIpQLS…", "entries": { "cas": "entry.111", "participant": "entry.222" } }</code></p>
-        <p>Le mode d'emploi (récupérer les <code>entry.…</code>) est dans le
-           <code>README.md</code>. Tant que ce n'est pas fait, le reste du site fonctionne.</p>`;
+        <p class="ph-title">Form not connected yet (expected on first run)</p>
+        <p>Create your Google Form, then paste its id into
+           <code>content/form.json</code>:</p>
+        <p><code>{ "formId": "1FAIpQLS…", "entries": { "case": "entry.111", "participant": "entry.222" } }</code></p>
+        <p>The walkthrough (finding the <code>entry.…</code> ids) is in the
+           <code>README.md</code>. Everything else works until then.</p>`;
       shell.append(box);
       return;
     }
 
     const frame = document.createElement('iframe');
     frame.src = src;
-    frame.title = 'Formulaire de réponse — ' + (data.title || 'cas');
+    frame.title = 'Answer form — ' + (data.title || 'case');
     frame.loading = 'lazy';
     frame.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
     shell.append(frame);
   }
 
-  /* ---------------- En-tête du cas ---------------- */
+  /* ---------------- Case header ---------------- */
 
   function renderHead(data) {
     document.title = data.title + ' · RadQuizz';
@@ -130,8 +130,8 @@
     const total = data.series.reduce((n, s) => n + (state.manifests.get(s.id) || []).length, 0);
     const parts = [
       data.exam,
-      `${data.series.length} série${data.series.length > 1 ? 's' : ''}`,
-      `${total} coupes`,
+      `${data.series.length} series`,
+      `${total} slices`,
     ].filter(Boolean);
     $('#case-meta').textContent = parts.join('  ·  ');
 
@@ -139,7 +139,7 @@
     if (tag) tag.textContent = data.formLabel || data.title;
   }
 
-  /* ---------------- Onglets = séries du cas ---------------- */
+  /* ---------------- Tabs = the case series ---------------- */
 
   function renderTabs(data) {
     const nav = $('#tabs');
@@ -183,13 +183,13 @@
     });
   }
 
-  /* ---------------- Pile d'images ----------------
-     Comportement « console » : la molette et le trackpad avancent d'une coupe
-     SANS transition, et un ascenseur à droite permet de se repérer et de sauter.
+  /* ---------------- Image stack ----------------
+     Console behaviour: the wheel and trackpad move one slice at a time with
+     no transition, and a scrubber on the right shows and changes position.
      ------------------------------------------------- */
 
-  const PRELOAD = 4;      // coupes préchargées de part et d'autre
-  const SLICE_STEP = 100; // px de molette pour passer une coupe (1 cran ≈ 100)
+  const PRELOAD = 4;      // slices preloaded on each side
+  const SLICE_STEP = 100; // wheel pixels per slice (one notch ≈ 100)
 
   function renderStage(serie) {
     const stage = $('#stage');
@@ -205,20 +205,20 @@
     stack.tabIndex = 0;
     stack.setAttribute('role', 'group');
     stack.setAttribute('aria-label', total
-      ? `Pile de ${total} coupes, utilisez les flèches haut et bas`
-      : 'Aucune image');
+      ? `Stack of ${total} slices, use the up and down arrows`
+      : 'No images');
 
     if (!total) {
       stack.innerHTML = `<p class="notice" style="margin:24px;color:#c9d1d9">
-        Aucune coupe pour cette série. Ajoutez des JPG dans
-        <code>${escapeHtml(serie.folder)}</code> puis lancez
+        No slices for this series. Add JPGs to
+        <code>${escapeHtml(serie.folder)}</code>, then run
         <code>npm run build</code>.</p>`;
     } else {
       files.forEach((file, i) => {
         const img = document.createElement('img');
         img.className = 'slice';
         img.src = imageUrl(serie, file);
-        img.alt = `Coupe ${i + 1} sur ${total}`;
+        img.alt = `Slice ${i + 1} of ${total}`;
         img.decoding = 'async';
         img.draggable = false;
         if (i > 3) img.loading = 'lazy';
@@ -248,7 +248,7 @@
       scrub.setAttribute('aria-valuemin', '1');
       scrub.setAttribute('aria-valuemax', String(total));
       scrub.setAttribute('aria-valuenow', '1');
-      scrub.setAttribute('aria-label', 'Position dans la pile de coupes');
+      scrub.setAttribute('aria-label', 'Position in the slice stack');
       scrub.innerHTML = '<div class="scrub-track"><div class="scrub-thumb"></div></div>';
       viewer.append(scrub);
     }
@@ -300,14 +300,14 @@
       if (countEl) countEl.textContent = ' / ' + total;
       if (scrub) {
         scrub.setAttribute('aria-valuenow', String(i + 1));
-        scrub.setAttribute('aria-valuetext', `Coupe ${i + 1} sur ${total}`);
+        scrub.setAttribute('aria-valuetext', `Slice ${i + 1} of ${total}`);
         if (track) track.style.setProperty('--p', String(maxIndex ? i / maxIndex : 0));
       }
       state.positions[key] = i;
       preload(i);
     }
 
-    /* hauteur du curseur de l'ascenseur */
+    /* scrubber thumb height */
     if (track) {
       const sizeThumb = () => {
         const h = Math.max(22, track.clientHeight / total);
@@ -324,7 +324,7 @@
       raf = requestAnimationFrame(() => { raf = 0; paint(); });
     }, { passive: true });
 
-    /* --- ciné : avance automatiquement, s'arrête à la fin --- */
+    /* --- cine loop: advances on its own, stops at the end --- */
     const btn = $('.cineloop', viewer);
     const svg = btn ? $('svg', btn) : null;
     const iconPlay = '<path d="M4 2.5v11l9-5.5z" fill="currentColor"/>';
@@ -352,16 +352,16 @@
       });
     }
 
-    /* --- molette / trackpad : une coupe par cran, sans animation --- */
+    /* --- wheel / trackpad: one slice per notch, no animation --- */
     let acc = 0;
     viewer.addEventListener('wheel', (e) => {
-      if (e.ctrlKey || e.metaKey) return;           // laisser le pinch-zoom
+      if (e.ctrlKey || e.metaKey) return;           // keep pinch-zoom
       const i = indexOf();
       const dy = e.deltaMode === 1 ? e.deltaY * 33
         : e.deltaMode === 2 ? e.deltaY * height()
         : e.deltaY;
 
-      // en bout de pile on laisse la page défiler (pour atteindre le formulaire)
+      // at either end, let the page scroll (to reach the form)
       if ((i <= 0 && dy < 0) || (i >= maxIndex && dy > 0)) return;
 
       e.preventDefault();
@@ -374,7 +374,7 @@
       paint();
     }, { passive: false });
 
-    /* --- clavier --- */
+    /* --- keyboard --- */
     stack.addEventListener('keydown', (e) => {
       const dirs = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 };
       if (e.key in dirs) { e.preventDefault(); goTo(indexOf() + dirs[e.key]); paint(); return; }
@@ -382,7 +382,7 @@
       if (e.key === 'End') { e.preventDefault(); goTo(maxIndex); paint(); }
     });
 
-    /* --- ascenseur : clic, glisser, clavier --- */
+    /* --- scrubber: click, drag, keyboard --- */
     if (scrub && track && thumb) {
       let dragging = false;
 
@@ -422,13 +422,13 @@
       });
     }
 
-    /* --- position de lecture restaurée --- */
+    /* --- restore the reading position --- */
     const remembered = Math.min(maxIndex, Math.max(0, Math.round(Number(state.positions[key]) || 0)));
     goTo(remembered);
     paint();
   }
 
-  /* ---------------- Navigation entre séries ---------------- */
+  /* ---------------- Switching series ---------------- */
 
   async function selectSerie(id, { push = true } = {}) {
     const data = state.data;
@@ -450,28 +450,56 @@
     return m ? decodeURIComponent(m[1]) : null;
   }
 
+  /* ---------------- Locked case ---------------- */
+
+  function renderLocked(data) {
+    document.title = 'A wrapped window · RadQuizz';
+    $('#case-kicker').textContent = 'Window closed';
+    $('#case-title').textContent = 'A wrapped window';
+    $('#case-stem').textContent = '';
+    $('#case-meta').textContent = '';
+
+    if ($('#tabs')) $('#tabs').hidden = true;
+    for (const sel of ['.hint', '#cta', '#answer', '#serie-meta']) {
+      const el = $(sel);
+      if (el) el.remove();
+    }
+
+    $('#stage').innerHTML = `
+      <div class="locked-window">
+        <svg class="locked-icon" viewBox="0 0 16 16" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="1.4">
+          <rect x="3.5" y="7" width="9" height="6.5" rx="1.6"/>
+          <path d="M5.5 7V5.4a2.5 2.5 0 0 1 5 0V7"/>
+        </svg>
+        <p class="locked-message">This window is still wrapped.</p>
+        <p class="locked-date">Opens ${escapeHtml(data.opensOn || 'later in December')}</p>
+        <a class="locked-back" href="${BASE}">Back to the calendar</a>
+      </div>`;
+  }
+
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, (c) => (
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
     ));
   }
 
-  /* ---------------- Démarrage ---------------- */
+  /* ---------------- Boot ---------------- */
 
   async function boot() {
     initTheme();
 
     if (location.protocol === 'file:') {
-      $('#stage').innerHTML = `<div class="notice"><strong>Ouverture en file://</strong><br>
-        Les navigateurs bloquent la lecture des fichiers JSON depuis un fichier local.
-        Lancez <code>npm start</code> ou <code>python3 -m http.server 8000</code>, puis ouvrez
+      $('#stage').innerHTML = `<div class="notice"><strong>Opened from file://</strong><br>
+        Browsers block JSON files from a local file.
+        Run <code>npm start</code> or <code>python3 -m http.server 8000</code>, then open
         <code>http://localhost:8000</code>.</div>`;
       return;
     }
 
     if (!CASE_ID) {
-      $('#stage').innerHTML = `<div class="notice"><strong>Page générée sans identifiant de cas.</strong><br>
-        Cette page doit être créée par <code>npm run build</code>.</div>`;
+      $('#stage').innerHTML = `<div class="notice"><strong>Page generated without a case id.</strong><br>
+        This page must be created by <code>npm run build</code>.</div>`;
       return;
     }
 
@@ -484,14 +512,17 @@
       state.data = data;
       state.form = { ...state.form, ...(formCfg || {}) };
 
+      if (VERSION) $('#version').textContent = 'v' + VERSION;
+      store.set('lastCase', CASE_ID);
+
+      // A case can stay wrapped: the page still exists, but shows the closed window.
+      if (data.open === false) { renderLocked(data); return; }
+
       if (!Array.isArray(data.series) || !data.series.length) {
-        throw new Error('Ce cas ne déclare aucune série.');
+        throw new Error('This case declares no series.');
       }
 
       await Promise.all(data.series.map((s) => loadManifest(s)));
-
-      if (VERSION) $('#version').textContent = 'v' + VERSION;
-      store.set('lastCase', CASE_ID);
 
       renderHead(data);
       renderTabs(data);
@@ -500,7 +531,7 @@
       const cta = $('#cta');
       if (cta) cta.addEventListener('click', (e) => {
         e.preventDefault();
-        $('#reponse').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        $('#answer').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       await selectSerie(idFromHash() || data.series[0].id, { push: false });
@@ -513,9 +544,9 @@
       window.addEventListener('pagehide', () => store.set('positions.v3', state.positions));
     } catch (err) {
       console.error(err);
-      $('#stage').innerHTML = `<div class="notice"><strong>Impossible de charger ce cas.</strong><br>
+      $('#stage').innerHTML = `<div class="notice"><strong>Could not load this case.</strong><br>
         ${escapeHtml(err.message)}<br>
-        Vérifiez <code>content/cases/${escapeHtml(CASE_ID)}.json</code> et relancez
+        Check <code>content/cases/${escapeHtml(CASE_ID)}.json</code> and run
         <code>npm run build</code>.</div>`;
     }
   }

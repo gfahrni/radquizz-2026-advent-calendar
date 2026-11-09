@@ -1,35 +1,157 @@
 {
-  "version": "0.4.2",
-  "cases": [
+  "version": "0.5.0",
+  "weeks": [
     {
-      "id": "abdomen-01",
-      "title": "Douleur de la fosse iliaque gauche",
-      "stem": "Homme, 68 ans. Douleur de la fosse iliaque gauche depuis 24 h, fébricule. Biologie : CRP 140 mg/L, leucocytes 14 G/L.",
-      "exam": "TDM abdominopelvienne, avec injection",
-      "href": "cas/abdomen-01/",
-      "thumb": "images/abdomen-01/axial/001.jpg",
-      "seriesCount": 2,
-      "sliceCount": 36
+      "week": 1,
+      "dates": "1–7 December",
+      "open": true,
+      "opensOn": "",
+      "cases": [
+        {
+          "id": "thorax-w1",
+          "number": 1,
+          "title": "Right basal chest pain",
+          "stem": "Woman, 54. Sudden right-sided chest pain when coughing, mild dyspnoea, reduced breath sounds at the right base. No fever, no relevant history.",
+          "exam": "CT chest, non-contrast",
+          "theme": "thorax",
+          "themeLabel": "Thorax",
+          "open": true,
+          "opensOn": "1 December",
+          "href": "cases/thorax-w1/",
+          "thumb": "images/thorax-w1/axial/001.jpg",
+          "seriesCount": 2,
+          "sliceCount": 16
+        },
+        {
+          "id": "cardio-w1",
+          "number": 2,
+          "title": "Acute central chest pain",
+          "stem": "Man, 58. Central chest pain for two hours after climbing stairs, radiating to the left arm. Mildly elevated troponin. No prior cardiac history.",
+          "exam": "Coronary CT angiography",
+          "theme": "cardio",
+          "themeLabel": "Cardiovascular",
+          "open": true,
+          "opensOn": "1 December",
+          "href": "cases/cardio-w1/",
+          "thumb": "images/cardio-w1/axial/001.jpg",
+          "seriesCount": 2,
+          "sliceCount": 16
+        }
+      ]
     },
     {
-      "id": "cerveau-01",
-      "title": "Céphalée brutale",
-      "stem": "Femme, 31 ans. Céphalée brutale en coup de tonnerre il y a 3 heures, sans déficit neurologique focal. Pas d'antécédent migraineux.",
-      "exam": "TDM cérébrale, sans injection",
-      "href": "cas/cerveau-01/",
-      "thumb": "images/cerveau-01/axial/001.jpg",
-      "seriesCount": 2,
-      "sliceCount": 28
+      "week": 2,
+      "dates": "8–14 December",
+      "open": false,
+      "opensOn": "8 December",
+      "cases": [
+        {
+          "id": "thorax-w2",
+          "number": 3,
+          "title": "Fever and productive cough",
+          "stem": "Woman, 41. High fever and productive cough for five days, right-sided pleuritic pain. CRP 180 mg/L, leucocytes 16 G/L.",
+          "exam": "CT chest, with contrast",
+          "theme": "thorax",
+          "themeLabel": "Thorax",
+          "open": false,
+          "opensOn": "8 December",
+          "href": "cases/thorax-w2/",
+          "thumb": "",
+          "seriesCount": 2,
+          "sliceCount": 0
+        },
+        {
+          "id": "cardio-w2",
+          "number": 4,
+          "title": "Exertional dyspnoea",
+          "stem": "Man, 67. Progressive exertional dyspnoea over three months. Systolic murmur at the base. History of hypertension.",
+          "exam": "Cardiac CT",
+          "theme": "cardio",
+          "themeLabel": "Cardiovascular",
+          "open": false,
+          "opensOn": "8 December",
+          "href": "cases/cardio-w2/",
+          "thumb": "",
+          "seriesCount": 2,
+          "sliceCount": 0
+        }
+      ]
     },
     {
-      "id": "thorax-01",
-      "title": "Douleur basithoracique droite",
-      "stem": "Femme, 54 ans. Douleur brutale de l'hémithorax droit à la toux, dyspnée légère, auscultation diminuée à droite. Pas de fièvre, pas d'antécédent particulier.",
-      "exam": "TDM thoracique, sans injection",
-      "href": "cas/thorax-01/",
-      "thumb": "images/thorax-01/axial/001.jpg",
-      "seriesCount": 2,
-      "sliceCount": 42
+      "week": 3,
+      "dates": "15–21 December",
+      "open": false,
+      "opensOn": "15 December",
+      "cases": [
+        {
+          "id": "thorax-w3",
+          "number": 5,
+          "title": "Haemoptysis",
+          "stem": "Man, 62. Two episodes of haemoptysis this week. Smoker, 40 pack-years. No fever, no weight loss.",
+          "exam": "CT chest, with contrast",
+          "theme": "thorax",
+          "themeLabel": "Thorax",
+          "open": false,
+          "opensOn": "15 December",
+          "href": "cases/thorax-w3/",
+          "thumb": "",
+          "seriesCount": 2,
+          "sliceCount": 0
+        },
+        {
+          "id": "cardio-w3",
+          "number": 6,
+          "title": "Syncope on exertion",
+          "stem": "Woman, 49. Syncope while climbing stairs, no prodrome, no chest pain. Mild hypoxia at rest.",
+          "exam": "CT pulmonary angiography",
+          "theme": "cardio",
+          "themeLabel": "Cardiovascular",
+          "open": false,
+          "opensOn": "15 December",
+          "href": "cases/cardio-w3/",
+          "thumb": "",
+          "seriesCount": 2,
+          "sliceCount": 0
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "dates": "22–28 December",
+      "open": false,
+      "opensOn": "22 December",
+      "cases": [
+        {
+          "id": "thorax-w4",
+          "number": 7,
+          "title": "Incidental pulmonary nodule",
+          "stem": "Woman, 59. 8 mm nodule in the right upper lobe found on a screening CT. Asymptomatic, non-smoker.",
+          "exam": "Low-dose CT chest",
+          "theme": "thorax",
+          "themeLabel": "Thorax",
+          "open": false,
+          "opensOn": "22 December",
+          "href": "cases/thorax-w4/",
+          "thumb": "",
+          "seriesCount": 2,
+          "sliceCount": 0
+        },
+        {
+          "id": "cardio-w4",
+          "number": 8,
+          "title": "Palpitations",
+          "stem": "Man, 45. Episodes of palpitations at rest for one month. Sinus rhythm on ECG, no chest pain.",
+          "exam": "Coronary CT angiography",
+          "theme": "cardio",
+          "themeLabel": "Cardiovascular",
+          "open": false,
+          "opensOn": "22 December",
+          "href": "cases/cardio-w4/",
+          "thumb": "",
+          "seriesCount": 2,
+          "sliceCount": 0
+        }
+      ]
     }
   ]
 }

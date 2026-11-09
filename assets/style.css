@@ -509,11 +509,38 @@ a { color: var(--accent); }
 .kicker::before { opacity: .8; }
 .cta { box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 14px 26px -16px rgba(200,16,46,.9); }
 
-/* ---------- 8. Accueil : liste des cas ---------- */
-.cases {
+/* ---------- 8. Home: weeks and doors ---------- */
+.weeks { display: grid; gap: 34px; }
+
+.week-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 12px;
+}
+.week-title { font-size: 1.02rem; letter-spacing: -.01em; }
+.week-dates { font-size: .82rem; color: var(--ink-3); }
+.week-state {
+  margin-left: auto;
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 11px;
+}
+.week-state.is-open {
+  color: var(--gold);
+  border-color: var(--gold-soft);
+  background: rgba(232, 195, 122, .06);
+}
+
+.doors {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .case-card {
@@ -632,8 +659,10 @@ a { color: var(--accent); }
 .version { opacity: .6; font-variant-numeric: tabular-nums; }
 
 @media (max-width: 720px) {
-  .cases { grid-template-columns: 1fr; gap: 14px; }
+  .doors { grid-template-columns: 1fr; gap: 14px; }
   .case-head h1 { font-size: 1.5rem; }
+  .case-card.is-locked { min-height: 190px; }
+  .week-state { margin-left: 0; }
 }
 
 
@@ -807,3 +836,91 @@ a { color: var(--accent); }
 @media (max-width: 560px) {
   .chrome-note-long { display: none; }
 }
+
+/* numéro de fenêtre, en pastille sur la vignette */
+.thumb { position: relative; }
+.door-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-variant-numeric: tabular-nums;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--gold);
+  background: rgba(10, 12, 16, .72);
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  padding: 3px 9px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* fenêtre fermée : papier d'emballage non déballé */
+.case-card.is-locked {
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  cursor: default;
+  box-shadow: none;
+  border: 1px dashed var(--line);
+  background:
+    repeating-linear-gradient(135deg,
+      transparent 0 13px, rgba(232, 195, 122, .04) 13px 26px),
+    var(--surface);
+  color: var(--ink-3);
+}
+.case-card.is-locked:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--line);
+}
+.case-card.is-locked::before { opacity: .28; }
+
+.locked-face {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  padding: 26px;
+  text-align: center;
+}
+.locked-number {
+  font-family: var(--font-display);
+  font-size: 2.7rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold);
+  opacity: .4;
+}
+.locked-icon { width: 18px; height: 18px; opacity: .55; }
+.locked-text {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+/* page d'un cas encore fermé */
+.locked-window {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  padding: 72px 24px;
+  text-align: center;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background:
+    repeating-linear-gradient(135deg,
+      transparent 0 13px, rgba(232, 195, 122, .035) 13px 26px),
+    var(--surface);
+}
+.locked-window .locked-icon { width: 34px; height: 34px; color: var(--gold); opacity: .8; }
+.locked-message { font-family: var(--font-display); font-size: 1.1rem; color: var(--ink); }
+.locked-date { font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-3); }
+.locked-back {
+  margin-top: 6px;
+  font-size: .88rem;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-soft);
+}
+.locked-back:hover { color: var(--ink); }

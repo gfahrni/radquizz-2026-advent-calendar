@@ -1,0 +1,25 @@
+{
+  "id": "thorax-w4",
+  "week": 4,
+  "theme": "thorax",
+  "open": false,
+  "opensOn": "22 December",
+  "title": "Incidental pulmonary nodule",
+  "exam": "Low-dose CT chest",
+  "stem": "Woman, 59. 8 mm nodule in the right upper lobe found on a screening CT. Asymptomatic, non-smoker.",
+  "formLabel": "Case 7 — Incidental pulmonary nodule",
+  "series": [
+    {
+      "id": "axial",
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/thorax-w4/axial"
+    },
+    {
+      "id": "coronal",
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/thorax-w4/coronal"
+    }
+  ]
+}

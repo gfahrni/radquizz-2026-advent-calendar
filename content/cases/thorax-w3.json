@@ -1,0 +1,25 @@
+{
+  "id": "thorax-w3",
+  "week": 3,
+  "theme": "thorax",
+  "open": false,
+  "opensOn": "15 December",
+  "title": "Haemoptysis",
+  "exam": "CT chest, with contrast",
+  "stem": "Man, 62. Two episodes of haemoptysis this week. Smoker, 40 pack-years. No fever, no weight loss.",
+  "formLabel": "Case 5 — Haemoptysis",
+  "series": [
+    {
+      "id": "axial",
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/thorax-w3/axial"
+    },
+    {
+      "id": "coronal",
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/thorax-w3/coronal"
+    }
+  ]
+}

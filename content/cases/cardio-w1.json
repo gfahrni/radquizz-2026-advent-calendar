@@ -1,0 +1,25 @@
+{
+  "id": "cardio-w1",
+  "week": 1,
+  "theme": "cardio",
+  "open": true,
+  "opensOn": "1 December",
+  "title": "Acute central chest pain",
+  "exam": "Coronary CT angiography",
+  "stem": "Man, 58. Central chest pain for two hours after climbing stairs, radiating to the left arm. Mildly elevated troponin. No prior cardiac history.",
+  "formLabel": "Case 2 — Acute central chest pain",
+  "series": [
+    {
+      "id": "axial",
+      "tab": "Axial",
+      "note": "Axial slices · 0.6 mm",
+      "folder": "images/cardio-w1/axial"
+    },
+    {
+      "id": "coronal",
+      "tab": "Coronal",
+      "note": "Coronal reconstruction",
+      "folder": "images/cardio-w1/coronal"
+    }
+  ]
+}

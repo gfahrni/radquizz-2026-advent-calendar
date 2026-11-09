@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-theme="noel">
+<html lang="en" data-theme="noel">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -14,7 +14,7 @@
 <meta property="og:image" content="{{OG_IMAGE}}">
 <meta property="og:image:width" content="900">
 <meta property="og:image:height" content="900">
-<meta property="og:locale" content="fr_CH">
+<meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 
 <meta name="theme-color" content="#0f1d16" id="meta-theme-color">
@@ -23,11 +23,11 @@
 </head>
 <body data-case="{{CASE_ID}}" data-base="{{BASE}}" data-version="{{VERSION}}">
 
-<a class="skip-link" href="#reponse">Aller à la zone de réponse</a>
+<a class="skip-link" href="#answer">Skip to the answer</a>
 
 <div class="chrome">
   <div class="chrome-inner">
-    <a class="brand" href="{{BASE}}" aria-label="RadQuizz, accueil">
+    <a class="brand" href="{{BASE}}" aria-label="RadQuizz, home">
       <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.3"/>
         <path d="M12 1.8v4M12 18.2v4M1.8 12h4M18.2 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
@@ -36,20 +36,20 @@
       <span class="brand-text">RadQuizz</span>
     </a>
 
-    <p class="chrome-note"><span class="chrome-note-long">Calendrier de l'Avent · </span>1<sup>er</sup> – 24 décembre</p>
+    <p class="chrome-note"><span class="chrome-note-long">Advent calendar · </span>1–28 December</p>
   </div>
 </div>
 
 <main class="wrap" id="main">
 
   <header class="case-head">
-    <p class="kicker" id="case-kicker">Cas</p>
-    <h1 id="case-title">Chargement…</h1>
+    <p class="kicker" id="case-kicker">Case</p>
+    <h1 id="case-title">Loading…</h1>
     <p class="stem" id="case-stem"></p>
     <p class="case-meta" id="case-meta"></p>
   </header>
 
-  <nav class="tabs" id="tabs" role="tablist" aria-label="Séries de ce cas" hidden></nav>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Series of this case" hidden></nav>
 
   <div id="stage">
     <div class="skeleton" aria-hidden="true">
@@ -61,29 +61,29 @@
 
   <p class="hint">
     <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2v12M4 10l4 4 4-4"/></svg>
-    Molette ou flèches ↑ ↓ pour défiler les coupes
+    Mouse wheel or ↑ ↓ arrows to scroll through the slices
   </p>
 
-  <a class="cta" href="#reponse" id="cta">
-    Donner mon diagnostic
+  <a class="cta" href="#answer" id="cta">
+    Give my diagnosis
     <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5"/></svg>
   </a>
 
-  <section class="answer" id="reponse">
+  <section class="answer" id="answer">
     <div class="answer-head">
-      <h3>Votre diagnostic</h3>
+      <h3>Your diagnosis</h3>
       <span class="answer-tag" id="answer-tag"></span>
     </div>
-    <p class="answer-sub">Un diagnostic en texte libre, puis vos coordonnées.
-      Comptez deux minutes. L'envoi se fait depuis le formulaire ci-dessous.</p>
+    <p class="answer-sub">A short free-text diagnosis, then your details. It takes about two
+      minutes; the form below sends it.</p>
     <div class="form-shell" id="form-shell"></div>
   </section>
 
 </main>
 
 <footer class="foot">
-  <p>RadQuizz <span class="version" id="version"></span> — à visée pédagogique uniquement.</p>
-  <noscript><p class="warn">Ce quiz a besoin de JavaScript pour afficher les séries.</p></noscript>
+  <p>RadQuizz <span class="version" id="version"></span> — for educational purposes only.</p>
+  <noscript><p class="warn">This quiz needs JavaScript to show the series.</p></noscript>
 </footer>
 
 <script src="{{BASE}}assets/theme.js?v={{VERSION}}" defer></script>
