@@ -1,11 +1,15 @@
 /* =========================================================
-   Thème + petits utilitaires partagés (accueil et pages de cas)
+   Thème unique (Noël) + petits utilitaires partagés.
    Chargé avant app.js / home.js.
+
+   Le calendrier de l'Avent n'a qu'une seule apparence : plus de
+   bascule, plus de mémorisation, plus de ?theme=…
    ========================================================= */
 window.RQ = (() => {
   'use strict';
 
-  const THEMES = ['classic', 'noel'];
+  const THEME = 'noel';
+  const THEME_COLOR = '#0f1d16';
 
   const store = {
     get(key, fallback) {
@@ -19,29 +23,11 @@ window.RQ = (() => {
     },
   };
 
-  function applyTheme(theme, persist = true) {
-    const next = THEMES.includes(theme) ? theme : 'classic';
-    document.documentElement.dataset.theme = next;
-    document.querySelectorAll('[data-set-theme]').forEach((btn) => {
-      btn.setAttribute('aria-pressed', String(btn.dataset.setTheme === next));
-    });
-    const meta = document.getElementById('meta-theme-color');
-    if (meta) meta.content = next === 'noel' ? '#0f1d16' : '#f4f5f7';
-    if (persist) store.set('theme', next);
-  }
-
   function initTheme() {
-    const param = new URLSearchParams(location.search).get('theme');
-    let theme = THEMES.includes(param) ? param : store.get('theme', null);
-    if (!THEMES.includes(theme)) {
-      // Saisonnalité : tout décembre en thème de Noël, sauf choix explicite.
-      theme = new Date().getMonth() === 11 ? 'noel' : 'classic';
-    }
-    applyTheme(theme, THEMES.includes(param));
-    document.querySelectorAll('[data-set-theme]').forEach((btn) => {
-      btn.addEventListener('click', () => applyTheme(btn.dataset.setTheme));
-    });
+    document.documentElement.dataset.theme = THEME;
+    const meta = document.getElementById('meta-theme-color');
+    if (meta) meta.content = THEME_COLOR;
   }
 
-  return { THEMES, store, applyTheme, initTheme };
+  return { THEME, store, initTheme };
 })();

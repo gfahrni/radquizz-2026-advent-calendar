@@ -2,7 +2,7 @@
 
 **En ligne : <https://gfahrni.github.io/radquizz-2026-advent-calendar/>** — dépôt : <https://github.com/gfahrni/radquizz-2026-advent-calendar>
 
-Un quiz radiologique statique. **Un cas = une page**, avec un lien dédié à partager.
+Un calendrier de l'Avent radiologique statique. **Un cas = une page**, avec un lien dédié à partager.
 Sur la page, les onglets sont les **séries** de ce cas (axial médiastinal, coronal poumon, …) :
 on fait défiler les coupes, puis on donne son diagnostic en bas de page. La réponse part
 dans un Google Sheet via un Google Form intégré.
@@ -11,7 +11,7 @@ dans un Google Sheet via un Google Form intégré.
 - Une page par cas, avec son titre, sa description et son aperçu LinkedIn.
 - Les réponses sont **préremplies** (cas + identifiant participant) : le participant ne saisit
   que son diagnostic et ses coordonnées.
-- **Thème classique** et **thème de Noël** interchangeables (`?theme=noel`).
+- **Thème de Noël unique** pour l'édition 2026 : guirlande, flocons discrets, accents dorés.
 
 ---
 
@@ -211,21 +211,26 @@ puis `npm run build`. L'onglet apparaît automatiquement.
 
 ## 7. Le thème de Noël
 
-Trois façons de l'activer :
+Plus de bascule : le site est **en thème de Noël en permanence**. Il n'y a ni bouton, ni
+`?theme=noel`, ni mémorisation — `assets/theme.js` applique `data-theme="noel"` au chargement
+et ne fait rien d'autre.
 
-- **manuel** : bouton « Noël » en haut à droite (mémorisé dans le navigateur) ;
-- **par lien** : `https://…/radquizz/?theme=noel` — idéal pour un post de décembre ;
-- **automatique** : tout le mois de décembre, si le visiteur n'a jamais choisi de thème.
+Tout le design tient dans les variables au début de `assets/style.css` (`:root`) : fond vert
+nuit, rouge pour l'action, or pour les accents. Les décorations sont regroupées en fin de
+fichier, section « 12. Décor de Noël » :
 
-Tout le design tient dans des variables CSS au début de `assets/style.css`. Pour un troisième
-thème, dupliquez le bloc `[data-theme="noel"]`, changez les couleurs, ajoutez un bouton dans
-`index.html` et `_template.html` :
+- **neige** : deux couches de flocons en CSS pur (`body::before` / `body::after`). Régler
+  `--snow-tile` (espacement), `opacity` et `animation-duration` par couche ; l'animation
+  s'arrête d'elle-même si le visiteur a demandé « réduire les animations » ;
+- **guirlande** du header (`.chrome::after`) et **ruban tricolore** en tête des cartes ;
+- **cadre doré** de la visionneuse (équerres), filet au-dessus de la zone de réponse,
+  ornement sous l'introduction.
 
-```html
-<button class="chip" type="button" data-set-theme="ete">Été</button>
+L'aperçu LinkedIn (`assets/og-image.png`, 1200×630) est généré, pas dessiné à la main :
+
+```bash
+python3 tools/make-og.py     # relancer si le titre ou la période changent
 ```
-
-et déclarez-le dans `assets/theme.js` : `const THEMES = ['classic', 'noel', 'ete'];`.
 
 **Le formulaire, lui, ne suit pas le thème** : c'est un iframe Google, impossible à styler
 depuis la page. Pour éviter le contraste, changez aussi sa palette dans Google Forms
@@ -290,7 +295,7 @@ _template.html              gabarit d'une page de cas (édité par le build)
 cas/<cas>/index.html        pages générées, une par cas
 
 assets/style.css            design + thèmes (variables CSS)
-assets/theme.js             thème partagé (bascule, mémorisation, décembre)
+assets/theme.js             thème unique (Noël) + stockage local partagé
 assets/app.js               page de cas : séries, pile d'images, formulaire
 assets/home.js              accueil : grille des cas
 assets/og-image.png         aperçu LinkedIn de l'accueil (1200×630)
@@ -304,6 +309,7 @@ images/<cas>/<série>/       les coupes + manifest.json généré
 tools/build.mjs             manifest + pages + index
 tools/serve.mjs             serveur local de test
 tools/make-placeholders.py  régénère les images de démonstration
+tools/make-og.py            régénère l'aperçu LinkedIn (thème de Noël)
 package.json                version du site + scripts
 .nojekyll                   évite le traitement Jekyll par GitHub Pages
 ```
