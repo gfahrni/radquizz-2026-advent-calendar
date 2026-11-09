@@ -186,14 +186,27 @@ result into `content/form.json`:
 {
   "formId": "1FAIpQLSdXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
   "entries": {
-    "case": "entry.123456789",
-    "participant": "entry.987654321"
+    "case": "entry.111111111",
+    "participant": "entry.222222222",
+    "diagnosis": "entry.333333333",
+    "name": "entry.444444444",
+    "email": "entry.555555555",
+    "status": "entry.666666666"
   }
 }
 ```
 
-Reload: the form appears at the bottom of every case, with the case and the participant
-id already filled in.
+Reload: the answer form appears at the bottom of every case, already knowing which case
+and which participant it belongs to.
+
+> **Why six ids?** The site draws its own form (dark, English) and posts it straight to
+> Google's `formResponse` endpoint — same form, same Sheet. That needs the id of every
+> question. If only `case` and `participant` are set, the site falls back to the embedded
+> Google iframe: it works, but it follows the visitor's Google/browser language and is
+> always light.
+>
+> The Apps Script helper prints the six ids. If you collect them by hand, remember that
+> the `entry.…` id is **not** the question id: use **⋮ → Get pre-filled link**.
 
 > An `entry.…` changes if you **delete and recreate** a question. Editing it (text, order)
 > does not change it.

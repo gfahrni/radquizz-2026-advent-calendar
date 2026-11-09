@@ -1,8 +1,12 @@
 {
-  "_readme": "Paste your Google Form id here, then the entry.… ids of the questions to prefill (case + participant). See README.md, section “Connecting the form”.",
+  "_readme": "Google Form ids. formId + the six entry.… ids (case, participant, diagnosis, name, email, status). The site renders its own dark form and posts to Google; if the four extra ids are missing it falls back to the embedded iframe. See README.md, section “Connecting the form”.",
   "formId": "1FAIpQLSe4g-eCpcbFA9G40QWKwpW2MB2Em1kwMLkEcYzU8ur3l-Zkcg",
   "entries": {
     "case": "entry.2116737861",
-    "participant": "entry.643055292"
+    "participant": "entry.643055292",
+    "diagnosis": "entry.2026818857",
+    "name": "entry.1895911572",
+    "email": "entry.316811114",
+    "status": "entry.205965578"
   }
 }

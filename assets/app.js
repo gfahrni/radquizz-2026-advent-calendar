@@ -64,7 +64,69 @@
   const imageUrl = (serie, file) =>
     url(String(serie.folder).replace(/\/+$/, '') + '/' + encodeURIComponent(file));
 
-  /* ---------------- Form ---------------- */
+  /* ---------------- Form ----------------
+     The answer form is our own <form>, posting straight to Google's
+     formResponse endpoint: same Google Form, same Sheet, but in English
+     and styled like the site. If the extra entry ids are missing from
+     content/form.json, it falls back to the embedded Google iframe.
+     ------------------------------------------------- */
+
+  function googleFormId() {
+    const raw = String(state.form.formId || '');
+    if (!raw) return '';
+    const match = /\/d\/e\/([^/]+)/.exec(raw);
+    if (match) return match[1];
+    if (/^https?:/i.test(raw)) return '';
+    return raw;
+  }
+
+  function buildNativeForm(data) {
+    const { entries = {} } = state.form;
+    const id = googleFormId();
+    const needed = ['case', 'participant', 'diagnosis', 'name', 'email', 'status'];
+    if (!id || needed.some((key) => !entries[key])) return null;
+
+    const form = document.createElement('form');
+    form.className = 'answer-form';
+    form.method = 'POST';
+    form.action = 'https://docs.google.com/forms/d/e/' + encodeURIComponent(id) + '/formResponse';
+    form.target = 'rq-sink';
+
+    const hidden = {
+      [entries.case]: data.formLabel || data.title || data.id,
+      [entries.participant]: state.pid,
+    };
+
+    form.innerHTML = `
+      ${Object.entries(hidden).map(([name, value]) =>
+        `<input type="hidden" name="${name}" value="${escapeHtml(value)}">`).join('')}
+      <div class="field">
+        <label for="f-diagnosis">Diagnosis <span class="req" aria-hidden="true">*</span></label>
+        <textarea id="f-diagnosis" name="${entries.diagnosis}" rows="4" required
+          placeholder="Your diagnosis in a few words"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f-name">Name <span class="req" aria-hidden="true">*</span></label>
+          <input id="f-name" name="${entries.name}" type="text" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+          <input id="f-email" name="${entries.email}" type="email" required autocomplete="email">
+        </div>
+      </div>
+      <fieldset class="field">
+        <legend>Status <span class="req" aria-hidden="true">*</span></legend>
+        <div class="radio-row">
+          <label class="radio"><input type="radio" name="${entries.status}" value="Junior" required> Junior</label>
+          <label class="radio"><input type="radio" name="${entries.status}" value="Senior"> Senior</label>
+        </div>
+      </fieldset>
+      <button class="cta form-send" type="submit">Send my answer</button>
+      <p class="form-note">Your answer goes to a Google Sheet. One submission per case is enough.</p>`;
+
+    return form;
+  }
 
   function buildFormSrc(data) {
     const { formId, entries = {} } = state.form;
@@ -92,32 +154,68 @@
     return link.toString();
   }
 
+  function showThanks(shell, data) {
+    shell.innerHTML = `
+      <div class="form-thanks">
+        <svg class="thanks-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="1.6"><path d="M4 12.5 9.5 18 20 6.5"/></svg>
+        <p class="ph-title">Thank you — your answer is in.</p>
+        <p class="thanks-sub">${escapeHtml(data.formLabel || data.title || '')}</p>
+      </div>`;
+  }
+
   function renderForm(data) {
     const shell = $('#form-shell');
     if (!shell) return;
     shell.replaceChildren();
 
-    const src = buildFormSrc(data);
-    if (!src) {
+    const native = buildNativeForm(data);
+    const src = native ? null : buildFormSrc(data);
+
+    if (!native && !src) {
       const box = document.createElement('div');
       box.className = 'form-placeholder';
       box.innerHTML = `
         <p class="ph-title">Form not connected yet (expected on first run)</p>
-        <p>Create your Google Form, then paste its id into
+        <p>Create your Google Form, then paste its id and the field ids into
            <code>content/form.json</code>:</p>
-        <p><code>{ "formId": "1FAIpQLS…", "entries": { "case": "entry.111", "participant": "entry.222" } }</code></p>
-        <p>The walkthrough (finding the <code>entry.…</code> ids) is in the
-           <code>README.md</code>. Everything else works until then.</p>`;
+        <p><code>{ "formId": "1FAIpQLS…", "entries": { "case": "entry.111", "diagnosis": "entry.222", … } }</code></p>
+        <p>The walkthrough is in the <code>README.md</code>. Everything else works until then.</p>`;
       shell.append(box);
       return;
     }
 
-    const frame = document.createElement('iframe');
-    frame.src = src;
-    frame.title = 'Answer form — ' + (data.title || 'case');
-    frame.loading = 'lazy';
-    frame.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-    shell.append(frame);
+    if (!native) {
+      const frame = document.createElement('iframe');
+      frame.src = src;
+      frame.title = 'Answer form — ' + (data.title || 'case');
+      frame.loading = 'lazy';
+      frame.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+      shell.append(frame);
+      return;
+    }
+
+    // hidden target: the POST never leaves the page
+    const sink = document.createElement('iframe');
+    sink.name = 'rq-sink';
+    sink.className = 'form-sink';
+    sink.title = 'Form submission';
+    sink.setAttribute('aria-hidden', 'true');
+    sink.tabIndex = -1;
+
+    let sent = false;
+    sink.addEventListener('load', () => { if (sent) showThanks(shell, data); });
+
+    native.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!native.reportValidity()) return;
+      const btn = $('.form-send', native);
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+      sent = true;
+      native.submit();
+    });
+
+    shell.append(native, sink);
   }
 
   /* ---------------- Case header ---------------- */

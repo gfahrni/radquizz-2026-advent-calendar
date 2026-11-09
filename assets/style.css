@@ -929,3 +929,85 @@ a { color: var(--accent); }
   border-bottom: 1px solid var(--gold-soft);
 }
 .locked-back:hover { color: var(--ink); }
+
+/* ---------- 13. Native answer form ----------
+   The form is ours: it posts to Google's formResponse endpoint, so it can
+   be dark and in English. The iframe is only a fallback. */
+.answer-form {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+}
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > label,
+.field > legend {
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--ink-2);
+}
+.field .req { color: var(--gold); }
+.field input[type="text"],
+.field input[type="email"],
+.field textarea {
+  width: 100%;
+  font: inherit;
+  font-size: .95rem;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field textarea { min-height: 108px; resize: vertical; }
+.field input::placeholder,
+.field textarea::placeholder { color: var(--ink-3); }
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--gold-soft);
+  box-shadow: 0 0 0 3px rgba(232, 195, 122, .13);
+}
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+fieldset.field { border: 0; padding: 0; margin: 0; }
+.radio-row { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .93rem;
+}
+.radio input { accent-color: var(--accent); width: 16px; height: 16px; }
+.form-send { border: 0; cursor: pointer; margin-top: 2px; }
+.form-send:disabled { opacity: .6; cursor: progress; }
+.form-note { font-size: .76rem; color: var(--ink-3); }
+.form-sink {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0;
+  visibility: hidden;
+}
+.form-thanks {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  padding: 34px 24px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.form-thanks .thanks-icon { width: 34px; height: 34px; color: var(--gold); }
+.form-thanks .ph-title { font-size: 1.05rem; font-weight: 600; }
+.form-thanks .thanks-sub { color: var(--ink-3); font-size: .85rem; }
+
+@media (max-width: 720px) {
+  .field-row { grid-template-columns: 1fr; }
+  .answer-form { padding: 16px; }
+}
