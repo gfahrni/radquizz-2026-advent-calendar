@@ -219,9 +219,12 @@ Tout le design tient dans les variables au début de `assets/style.css` (`:root`
 nuit, rouge pour l'action, or pour les accents. Les décorations sont regroupées en fin de
 fichier, section « 12. Décor de Noël » :
 
-- **neige** : deux couches de flocons en CSS pur (`body::before` / `body::after`). Régler
-  `--snow-tile` (espacement), `opacity` et `animation-duration` par couche ; l'animation
-  s'arrête d'elle-même si le visiteur a demandé « réduire les animations » ;
+- **neige** : un `<canvas>` plein écran, ajouté par `assets/theme.js`, qui dessine les
+  flocons SVG de `assets/neige/` avec des tailles, positions et rotations aléatoires (les
+  flocons tombent, dérivent latéralement et tournent). Réglages en tête de `theme.js` :
+  `AREA_PER_FLAKE` (densité), `MIN_FLAKES`/`MAX_FLAKES`, `MIN_SIZE`/`MAX_SIZE`. Si le
+  visiteur a demandé « réduire les animations », une image fixe est dessinée à la place.
+  La forme des flocons se régénère avec `python3 tools/make-snowflakes.py` ;
 - **guirlande** du header (`.chrome::after`) et **ruban tricolore** en tête des cartes ;
 - **cadre doré** de la visionneuse (équerres), filet au-dessus de la zone de réponse,
   ornement sous l'introduction.
@@ -305,11 +308,13 @@ content/cases.json          généré : index de l'accueil
 content/form.json           ← à éditer : identifiant du Google Form
 
 images/<cas>/<série>/       les coupes + manifest.json généré
+assets/neige/               les trois flocons SVG (générés)
 
 tools/build.mjs             manifest + pages + index
 tools/serve.mjs             serveur local de test
 tools/make-placeholders.py  régénère les images de démonstration
 tools/make-og.py            régénère l'aperçu LinkedIn (thème de Noël)
+tools/make-snowflakes.py    régénère les flocons de la neige
 package.json                version du site + scripts
 .nojekyll                   évite le traitement Jekyll par GitHub Pages
 ```

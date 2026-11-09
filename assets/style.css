@@ -92,50 +92,13 @@ a { color: var(--accent); }
 .skip-link:focus { top: 0; }
 
 /* ---------- 2. Neige ----------
-   Deux couches de flocons, en CSS pur. Chaque couche mesure une tuile de
-   plus que l'écran et glisse d'exactement une tuile : la boucle est
-   invisible, et l'animation reste composited (transform uniquement). */
-body::before,
-body::after {
-  content: "";
+   Le canvas plein écran est ajouté par theme.js (flocons SVG de
+   assets/neige/) : le CSS ne fait que le caler derrière le contenu. */
+.snow {
   position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: calc(100vh + var(--snow-tile));
+  inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-repeat: repeat;
-  background-size: var(--snow-tile) var(--snow-tile);
-  animation: snowfall linear infinite;
-  will-change: transform;
-}
-
-/* couche lointaine : petits flocons, lente */
-body::before {
-  --snow-tile: 270px;
-  opacity: .34;
-  background-image:
-    radial-gradient(1.3px 1.3px at 18% 26%, #fff 50%, transparent 51%),
-    radial-gradient(1px 1px at 72% 68%, #fff 50%, transparent 51%),
-    radial-gradient(1.1px 1.1px at 44% 88%, #fff 50%, transparent 51%);
-  animation-duration: 52s;
-}
-
-/* couche proche : flocons un peu plus gros, plus rapide */
-body::after {
-  --snow-tile: 390px;
-  opacity: .42;
-  background-image:
-    radial-gradient(2px 2px at 32% 18%, #fff 50%, transparent 51%),
-    radial-gradient(1.7px 1.7px at 84% 54%, #fff 50%, transparent 51%),
-    radial-gradient(1.4px 1.4px at 58% 80%, #fff 50%, transparent 51%);
-  animation-duration: 36s;
-}
-
-@keyframes snowfall {
-  from { transform: translate3d(0, calc(-1 * var(--snow-tile)), 0); }
-  to   { transform: translate3d(0, 0, 0); }
 }
 
 .chrome, .wrap, .foot { position: relative; z-index: 1; }
