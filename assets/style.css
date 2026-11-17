@@ -268,31 +268,38 @@ a { color: var(--accent); }
   border: 1px solid var(--line);
 }
 
+/* Fixed frame, one slice at a time. It deliberately does not scroll: the
+   slices are stacked in the same box and only the visible one changes, so a
+   touch swipe never slides one slice under the next. */
 .stack {
+  position: relative;
   height: clamp(340px, 64svh, 680px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scroll-snap-type: y mandatory;
-  overscroll-behavior-y: auto;
+  overflow: hidden;
   background: var(--viewer-bg);
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+  touch-action: none;          /* the drag is ours, not the page's */
+  cursor: grab;
+  -webkit-tap-highlight-color: transparent;
 }
-.stack::-webkit-scrollbar { display: none; }
+.stack.is-dragging { cursor: grabbing; }
 .stack:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 
 .slice {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
   background: var(--viewer-bg);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   -webkit-user-drag: none;
+  -webkit-touch-callout: none;
   user-select: none;
+  -webkit-user-select: none;
 }
-.slice[data-loaded="false"] { background: #0a0a0a; }
+.slice.is-active { opacity: 1; visibility: visible; }
 
 .viewer::after {
   content: "";
@@ -488,11 +495,19 @@ a { color: var(--accent); }
   .chrome-note { font-size: .64rem; letter-spacing: .08em; }
   .wrap { padding: 22px 14px 70px; }
   .intro { text-align: left; margin-bottom: 18px; }
-  .stack { height: clamp(300px, 56svh, 520px); }
+  .stack { height: clamp(280px, 48svh, 520px); }
+  .sk-viewer { height: clamp(280px, 48svh, 520px); }
   .cta { width: 100%; }
   .form-shell iframe { height: 1560px; }
   .answer { margin-top: 34px; scroll-margin-top: 70px; }
   .hint { font-size: .78rem; }
+}
+
+/* Landscape phones and short windows: keep room under the frame so the
+   page can still be scrolled without starting the gesture on the image. */
+@media (max-height: 520px) {
+  .stack { height: clamp(220px, 62svh, 340px); }
+  .sk-viewer { height: clamp(220px, 62svh, 340px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -671,13 +686,9 @@ a { color: var(--accent); }
 }
 
 
-/* ---------- 11. “Console” scrolling ----------
-   Fine pointer (mouse/trackpad): no snapping, the wheel moves one slice
-   with no transition. Touch screens keep the native snap. */
-@media (hover: hover) and (pointer: fine) {
-  .stack { scroll-snap-type: none; }
-  .slice { scroll-snap-align: none; scroll-snap-stop: normal; }
-}
+/* ---------- 11. Console scrolling ----------
+   The frame is a fixed stage: the wheel, a drag or the arrow keys swap the
+   visible slice. Nothing is scrolled, so nothing slides. */
 
 /* Vertical scrubber, right of the viewer */
 .scrub {

@@ -83,18 +83,26 @@ window. Until then the page exists and says “This window is still wrapped.”
 
 ### Reading comfort
 
-Console behaviour: scrolling is continuous and **instant**, with no animation between
-slices.
+The viewer is a fixed frame, not a scroll area: one slice is visible at a time and
+changing the slice **swaps the image** — the frame never moves. That is how a CT is
+read, and it is the same on a computer and on a phone (no slide, no seam between
+slices, no accidental page scroll).
 
 - **Wheel / trackpad**: one slice per notch; small movements accumulate, a fast gesture
-  crosses the stack. At either end of the stack, the page scrolls so you can reach the form.
+  crosses the stack. At either end, the page scrolls so you can reach the form.
+- **Drag** on the image (finger, pen or mouse): moving up goes forward. A full-height
+  drag crosses the series.
+- **Tap** on a touch screen: the lower part goes forward, the upper part goes back.
 - **Scrubber on the right** of the image: click or drag to move, or focus it and use the
   arrow keys.
 - **Keyboard** on the image: ↑ ↓, Page↑ Page↓, Home / End.
-- Settings at the top of `assets/app.js`: `SLICE_STEP` (wheel pixels per slice, 100)
-  and `PRELOAD` (slices preloaded on each side, 4).
+- **Autoplay** (▶): 240 ms per slice, stops at the end.
+- Settings at the top of `assets/app.js`: `SLICE_STEP` (wheel pixels per slice, 90),
+  `DRAG_SLICES` (slices crossed by a full-height drag, 8) and `PRELOAD` (slices decoded
+  on each side, 4).
 
-On touch screens, the native snapped scrolling is kept (one slice at a time).
+Because the frame swallows the gesture, a swipe on the image never scrolls the page.
+Scroll from the text above the frame, from the hint, or from the button below it.
 
 ---
 

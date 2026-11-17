@@ -282,12 +282,18 @@
   }
 
   /* ---------------- Image stack ----------------
-     Console behaviour: the wheel and trackpad move one slice at a time with
-     no transition, and a scrubber on the right shows and changes position.
+     The frame never scrolls: one slice is visible at a time, and moving
+     through the series swaps the visible image. That is how a CT is read —
+     the frame stays put, only the content changes. Laying the slices out in a
+     scroll container (what we did before) made touch devices slide one slice
+     under the next: a stack of pages, not a CT.
+     Input: wheel / trackpad, drag, tap zones, keyboard, scrubber, cine loop.
      ------------------------------------------------- */
 
-  const PRELOAD = 4;      // slices preloaded on each side
-  const SLICE_STEP = 100; // wheel pixels per slice (one notch ≈ 100)
+  const PRELOAD = 4;      // slices decoded on each side
+  const SLICE_STEP = 90;  // wheel pixels per slice (a 3-line notch is 99 px)
+  const DRAG_SLICES = 8;  // a full-height drag crosses about this many slices
+  const TAP_TOP = 0.4;    // top 40 % of the frame = previous slice
 
   function renderStage(serie) {
     const stage = $('#stage');
@@ -303,7 +309,7 @@
     stack.tabIndex = 0;
     stack.setAttribute('role', 'group');
     stack.setAttribute('aria-label', total
-      ? `Stack of ${total} slices, use the up and down arrows`
+      ? `Image stack of ${total} slices. Use the up and down arrows, the wheel, or drag.`
       : 'No images');
 
     if (!total) {
@@ -314,13 +320,14 @@
     } else {
       files.forEach((file, i) => {
         const img = document.createElement('img');
-        img.className = 'slice';
+        img.className = 'slice' + (i === 0 ? ' is-active' : '');
         img.src = imageUrl(serie, file);
         img.alt = `Slice ${i + 1} of ${total}`;
         img.decoding = 'async';
         img.draggable = false;
-        if (i > 3) img.loading = 'lazy';
+        img.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
         if (i === 0) img.fetchPriority = 'high';
+        if (i > 3) img.loading = 'lazy';
         stack.append(img);
       });
     }
@@ -330,7 +337,7 @@
     hud.innerHTML = `
       <div class="counter"><span class="pos">1</span><span class="of"> / ${total || 0}</span></div>
       <div class="rationale">
-        <button class="icon-btn cineloop" type="button" aria-pressed="false" title="Lecture automatique (ciné)">
+        <button class="icon-btn cineloop" type="button" aria-pressed="false" title="Autoplay (cine)">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>
         </button>
       </div>`;
@@ -372,37 +379,54 @@
 
     const key = CASE_ID + ':' + serie.id;
     const maxIndex = total - 1;
-    const preloaded = new Map();
+    const slices = $$('.slice', stack);
+    const preloaded = new Set();
+    const decoded = new Set();
+    let current = 0;
 
-    const height = () => stack.clientHeight || 1;
-    const indexOf = () =>
-      Math.min(maxIndex, Math.max(0, Math.round(stack.scrollTop / height())));
-    const goTo = (i) => {
-      stack.scrollTop = Math.min(maxIndex, Math.max(0, i)) * height();
-    };
+    // a drag of the whole frame crosses the series in one go, whatever its length
+    const dragStep = () => Math.max(30, Math.min(60, (stack.clientHeight || 1) / DRAG_SLICES));
 
     function preload(center) {
       for (let d = -PRELOAD; d <= PRELOAD; d++) {
         const i = center + d;
-        if (i < 0 || i > maxIndex || preloaded.has(i)) continue;
-        const img = new Image();
-        img.decoding = 'async';
-        img.src = imageUrl(serie, files[i]);
-        preloaded.set(i, img);
+        if (i < 0 || i > maxIndex) continue;
+        const img = slices[i];
+        if (img && img.decode && !decoded.has(i)) {
+          decoded.add(i);
+          img.decode().catch(() => {});
+        }
+        if (preloaded.has(i)) continue;
+        const probe = new Image();
+        probe.decoding = 'async';
+        probe.src = imageUrl(serie, files[i]);
+        preloaded.add(i);
       }
     }
 
     function paint() {
-      const i = indexOf();
-      if (posEl) posEl.textContent = String(i + 1);
+      if (posEl) posEl.textContent = String(current + 1);
       if (countEl) countEl.textContent = ' / ' + total;
       if (scrub) {
-        scrub.setAttribute('aria-valuenow', String(i + 1));
-        scrub.setAttribute('aria-valuetext', `Slice ${i + 1} of ${total}`);
-        if (track) track.style.setProperty('--p', String(maxIndex ? i / maxIndex : 0));
+        scrub.setAttribute('aria-valuenow', String(current + 1));
+        scrub.setAttribute('aria-valuetext', `Slice ${current + 1} of ${total}`);
+        if (track) track.style.setProperty('--p', String(maxIndex ? current / maxIndex : 0));
       }
-      state.positions[key] = i;
-      preload(i);
+      state.positions[key] = current;
+      preload(current);
+    }
+
+    /* the only thing that changes is which slice is visible: no motion */
+    function show(i) {
+      const next = Math.min(maxIndex, Math.max(0, i));
+      if (next !== current) {
+        slices[current].classList.remove('is-active');
+        slices[current].setAttribute('aria-hidden', 'true');
+        current = next;
+        slices[current].classList.add('is-active');
+        slices[current].setAttribute('aria-hidden', 'false');
+      }
+      paint();
     }
 
     /* scrubber thumb height */
@@ -415,12 +439,6 @@
       if ('ResizeObserver' in window) new ResizeObserver(sizeThumb).observe(track);
       else window.addEventListener('resize', sizeThumb, { passive: true });
     }
-
-    let raf = 0;
-    stack.addEventListener('scroll', () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => { raf = 0; paint(); });
-    }, { passive: true });
 
     /* --- cine loop: advances on its own, stops at the end --- */
     const btn = $('.cineloop', viewer);
@@ -439,45 +457,51 @@
     if (btn) {
       btn.addEventListener('click', () => {
         if (state.cineloop) { stop(); return; }
+        if (current >= maxIndex) show(0);
         btn.setAttribute('aria-pressed', 'true');
         if (svg) svg.innerHTML = iconPause;
         state.cineloop = setInterval(() => {
-          const next = indexOf() + 1;
-          if (next > maxIndex) { stop(); return; }
-          goTo(next);
-          paint();
+          if (current >= maxIndex) { stop(); return; }
+          show(current + 1);
         }, 240);
       });
     }
 
     /* --- wheel / trackpad: one slice per notch, no animation --- */
     let acc = 0;
+    let accTimer = 0;
+    const resetAcc = () => {
+      clearTimeout(accTimer);
+      accTimer = setTimeout(() => { acc = 0; }, 220);
+    };
+
     viewer.addEventListener('wheel', (e) => {
       if (e.ctrlKey || e.metaKey) return;           // keep pinch-zoom
-      const i = indexOf();
       const dy = e.deltaMode === 1 ? e.deltaY * 33
-        : e.deltaMode === 2 ? e.deltaY * height()
+        : e.deltaMode === 2 ? e.deltaY * (stack.clientHeight || 1)
         : e.deltaY;
 
       // at either end, let the page scroll (to reach the form)
-      if ((i <= 0 && dy < 0) || (i >= maxIndex && dy > 0)) return;
+      if ((current <= 0 && dy < 0) || (current >= maxIndex && dy > 0)) return;
 
       e.preventDefault();
       stop();
+      if (dy * acc < 0) acc = 0;                    // direction change
       acc += dy;
       const steps = Math.trunc(acc / SLICE_STEP);
-      if (!steps) return;
-      acc -= steps * SLICE_STEP;
-      goTo(i + steps);
-      paint();
+      if (steps) {
+        acc -= steps * SLICE_STEP;
+        show(current + steps);
+      }
+      resetAcc();
     }, { passive: false });
 
     /* --- keyboard --- */
     stack.addEventListener('keydown', (e) => {
       const dirs = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 };
-      if (e.key in dirs) { e.preventDefault(); goTo(indexOf() + dirs[e.key]); paint(); return; }
-      if (e.key === 'Home') { e.preventDefault(); goTo(0); paint(); }
-      if (e.key === 'End') { e.preventDefault(); goTo(maxIndex); paint(); }
+      if (e.key in dirs) { e.preventDefault(); stop(); show(current + dirs[e.key]); return; }
+      if (e.key === 'Home') { e.preventDefault(); stop(); show(0); }
+      if (e.key === 'End') { e.preventDefault(); stop(); show(maxIndex); }
     });
 
     /* --- scrubber: click, drag, keyboard --- */
@@ -491,8 +515,8 @@
         return Math.min(1, Math.max(0, (clientY - r.top - th / 2) / span));
       };
       const seek = (clientY) => {
-        goTo(Math.round(ratioAt(clientY) * maxIndex));
-        paint();
+        stop();
+        show(Math.round(ratioAt(clientY) * maxIndex));
       };
 
       scrub.addEventListener('pointerdown', (e) => {
@@ -514,16 +538,57 @@
 
       scrub.addEventListener('keydown', (e) => {
         const dirs = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
-        if (e.key in dirs) { e.preventDefault(); goTo(indexOf() + dirs[e.key]); paint(); return; }
-        if (e.key === 'Home') { e.preventDefault(); goTo(0); paint(); }
-        if (e.key === 'End') { e.preventDefault(); goTo(maxIndex); paint(); }
+        if (e.key in dirs) { e.preventDefault(); stop(); show(current + dirs[e.key]); return; }
+        if (e.key === 'Home') { e.preventDefault(); stop(); show(0); }
+        if (e.key === 'End') { e.preventDefault(); stop(); show(maxIndex); }
       });
     }
 
+    /* --- drag and tap: the touch model ---
+       The frame swallows the gesture (touch-action: none), so a finger on the
+       image never scrolls the page by accident: it moves through the slices.
+       A tap on the bottom goes forward, a tap on the top goes back. */
+    let drag = null;
+
+    stack.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      drag = { id: e.pointerId, y: e.clientY, x: e.clientX, from: current, steps: 0, moved: false };
+      stack.classList.add('is-dragging');
+      try { stack.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    });
+
+    stack.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (!drag.moved) {
+        if (Math.abs(e.clientY - drag.y) < 4 && Math.abs(e.clientX - drag.x) < 4) return;
+        drag.moved = true;
+        stop();
+      }
+      const steps = Math.trunc((drag.y - e.clientY) / dragStep());
+      if (steps === drag.steps) return;
+      drag.steps = steps;
+      show(drag.from + steps);
+    });
+
+    const endPointer = (e) => {
+      if (!drag) return;
+      const moved = drag.moved;
+      drag = null;
+      stack.classList.remove('is-dragging');
+      if (moved || !e || e.type !== 'pointerup') return;
+      if (e.pointerType === 'mouse') return;        // desktop has the wheel
+      const r = stack.getBoundingClientRect();
+      const y = (e.clientY || 0) - r.top;
+      stop();
+      show(current + (y < r.height * TAP_TOP ? -1 : 1));
+    };
+
+    stack.addEventListener('pointerup', endPointer);
+    stack.addEventListener('pointercancel', endPointer);
+
     /* --- restore the reading position --- */
     const remembered = Math.min(maxIndex, Math.max(0, Math.round(Number(state.positions[key]) || 0)));
-    goTo(remembered);
-    paint();
+    show(remembered);
   }
 
   /* ---------------- Switching series ---------------- */
@@ -582,10 +647,22 @@
     ));
   }
 
+  /* ---------------- Hint ----------------
+     The gesture differs between a mouse and a finger; say the right one. */
+  function setHint() {
+    const el = $('#hint-text');
+    if (!el) return;
+    const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    el.textContent = coarse
+      ? 'Drag up or down to go through the slices'
+      : 'Mouse wheel, drag or ↑ ↓ arrows to go through the slices';
+  }
+
   /* ---------------- Boot ---------------- */
 
   async function boot() {
     initTheme();
+    setHint();
 
     if (location.protocol === 'file:') {
       $('#stage').innerHTML = `<div class="notice"><strong>Opened from file://</strong><br>
