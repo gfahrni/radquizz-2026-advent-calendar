@@ -8,10 +8,10 @@
   const { initTheme, store } = window.RQ;
   const $ = (sel, root = document) => root.querySelector(sel);
 
-  /* ?preview=1 opens every window for the author, whatever "open" says in the
-     JSON. Nothing is secret (the repository is public); this is only there to
-     look at the whole calendar without spoiling it for the visitors. */
-  const PREVIEW = new URLSearchParams(location.search).has('preview');
+  /* ?catherine-mode=1 opens every window for the author, whatever "open" says
+     in the JSON. Nothing is secret (the repository is public); this is only
+     there to look at the whole calendar without spoiling it for the visitors. */
+  const PREVIEW = new URLSearchParams(location.search).has('catherine-mode');
   const isOpen = (item) => Boolean(item.open) || PREVIEW;
 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
@@ -29,7 +29,7 @@
   function openDoor(item) {
     const a = document.createElement('a');
     a.className = 'case-card';
-    a.href = item.href + (PREVIEW ? '?preview=1' : '');
+    a.href = item.href + (PREVIEW ? '?catherine-mode=1' : '');
     a.dataset.id = item.id;
     a.innerHTML = `
       <div class="thumb">
@@ -114,7 +114,7 @@
 
       if (PREVIEW) {
         const brand = $('.brand');
-        if (brand) brand.href = './?preview=1';
+        if (brand) brand.href = './?catherine-mode=1';
       }
 
       // small comfort: highlight the last case opened

@@ -13,8 +13,8 @@
   const CASE_ID = document.body.dataset.case || '';
   const VERSION = document.body.dataset.version || '';
 
-  /* ?preview=1 unwraps a case for the author. See assets/home.js. */
-  const PREVIEW = new URLSearchParams(location.search).has('preview');
+  /* ?catherine-mode=1 unwraps a case for the author. See assets/home.js. */
+  const PREVIEW = new URLSearchParams(location.search).has('catherine-mode');
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -696,7 +696,7 @@
       if (data.open === false && !PREVIEW) { renderLocked(data); return; }
       if (PREVIEW) {
         const brand = $('.brand');
-        if (brand) brand.href = BASE + '?preview=1';
+        if (brand) brand.href = BASE + '?catherine-mode=1';
       }
 
       if (!Array.isArray(data.series) || !data.series.length) {
