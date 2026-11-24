@@ -97,14 +97,14 @@
      memory bounded. Interacting pauses the stream for a moment.
      ------------------------------------------------- */
   const prefetch = (() => {
+    // The stream never stops: scrolling, scrubbing or dragging must not hold it
+    // back. It is the whole point of the prefetch — the reader keeps moving
+    // while the rest of the case lands in the cache.
     const CONCURRENCY = 4;
     const done = new Set();
     const queued = new Set();
     let queue = [];
     let active = 0;
-    let pausedUntil = 0;
-    let timer = 0;
-    const inflight = new Map(); // probe image -> url
     let watch = new Set();   // urls of the series on screen
     let watchDone = 0;
     let notify = null;
@@ -112,11 +112,6 @@
     const report = () => { if (notify) notify(watchDone, watch.size); };
 
     function pump() {
-      clearTimeout(timer);
-      if (Date.now() < pausedUntil) {
-        timer = setTimeout(pump, pausedUntil - Date.now());
-        return;
-      }
       while (active < CONCURRENCY && queue.length) {
         const { url: u } = queue.shift();
         queued.delete(u);
@@ -124,9 +119,7 @@
         active += 1;
         const img = new Image();
         img.decoding = 'async';
-        inflight.set(img, u);
         const finish = () => {
-          inflight.delete(img);
           done.add(u);
           active -= 1;
           if (watch.has(u)) { watchDone += 1; report(); }
@@ -158,21 +151,6 @@
         report();
       },
       onProgress(fn) { notify = fn; report(); },
-      // the reader took over: drop the probes in flight so the slice under the
-      // cursor gets the whole connection, and put them back in the queue
-      hold(ms) {
-        pausedUntil = Math.max(pausedUntil, Date.now() + ms);
-        if (!inflight.size) return;
-        for (const [img, u] of inflight) {
-          img.onload = null;
-          img.onerror = null;
-          img.src = '';
-          active -= 1;
-          if (!done.has(u) && !queued.has(u)) { queued.add(u); queue.unshift({ url: u }); }
-        }
-        inflight.clear();
-        if (active < 0) active = 0;
-      },
     };
   })();
 
@@ -684,7 +662,6 @@
     function show(i) {
       const next = Math.min(maxIndex, Math.max(0, i));
       current = next;
-      prefetch.hold(250);
       paint();
 
       const now = (window.performance || Date).now();
