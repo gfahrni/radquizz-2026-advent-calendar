@@ -146,7 +146,8 @@ slices, no accidental page scroll).
   scrubbing or dragging does not hold it back, it only takes a back seat on the shared
   connections. A 481-slice series is ~25 MB. When the reader stops moving, the missing
   slices are re-queued around the current slice, so jumping to the bottom makes the
-  bottom arrive first.
+  bottom arrive first. At open, one slice out of four is fetched first so the whole stack
+  is reachable within a second or two; the first gesture switches to the focused order.
 - **Slow link**: the frame keeps the previous slice until the next one is decoded, so a
   fast scroll never shows a black frame; the counter is the position asked for, the
   image catches up. Superseded downloads are cancelled, so the slice you stop on does

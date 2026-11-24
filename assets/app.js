@@ -492,7 +492,11 @@
     clearTimeout(state.prefetchTimer);
     if (total) {
       const key = CASE_ID + ':' + serie.id;
-      replan = (center) => {
+      // coarse: at open, every 4th slice first so the whole stack is reachable
+      // in a second or two; the focused order takes over as soon as the reader
+      // moves (see the settle timer in wireViewer).
+      const COARSE = 4;
+      replan = (center, coarse) => {
         const at = Math.min(files.length - 1, Math.max(0, center));
         const priority = [];
         for (let d = 0; d < files.length; d++) {
@@ -504,10 +508,16 @@
           if (other.id === serie.id) continue;
           for (const f of decimate(state.manifests.get(other.id) || [])) rest.push(imageUrl(other, f));
         }
-        prefetch.plan(priority, rest);
+        if (coarse) {
+          const stride = priority.filter((_, i) => i % COARSE === 0);
+          const fill = priority.filter((_, i) => i % COARSE !== 0);
+          prefetch.plan(stride, fill.concat(rest));
+        } else {
+          prefetch.plan(priority, rest);
+        }
       };
       state.prefetchTimer = setTimeout(() => {
-        replan(state.positions[key] || 0);
+        replan(state.positions[key] || 0, true);
       }, 350);
     }
 
