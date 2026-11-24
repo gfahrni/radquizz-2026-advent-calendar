@@ -418,15 +418,46 @@
       preload(current);
     }
 
-    /* the only thing that changes is which slice is visible: no motion */
+    /* the only thing that changes is which slice is visible: no motion.
+       The swap waits for the slice to be decoded: on a slow link the frame
+       keeps showing the previous slice instead of going black, which is what
+       a console does when it cannot follow. `current` is the position asked
+       for (counter, scrubber, saved position); `shown` is what is on screen. */
+    let shown = 0;
+
+    function paintSlice(i) {
+      if (i === shown) return;
+      slices[shown].classList.remove('is-active');
+      slices[shown].setAttribute('aria-hidden', 'true');
+      shown = i;
+      slices[shown].classList.add('is-active');
+      slices[shown].setAttribute('aria-hidden', 'false');
+    }
+
     function show(i) {
       const next = Math.min(maxIndex, Math.max(0, i));
-      if (next !== current) {
-        slices[current].classList.remove('is-active');
-        slices[current].setAttribute('aria-hidden', 'true');
-        current = next;
-        slices[current].classList.add('is-active');
-        slices[current].setAttribute('aria-hidden', 'false');
+      current = next;
+
+      const img = slices[next];
+      if (!img.hasAttribute('src')) img.src = imageUrl(serie, files[next]);
+
+      // A fast drag asks for dozens of slices in a row. Drop the requests that
+      // are now out of the window, otherwise the slice we stopped on waits
+      // behind every intermediate one (40 queued slices on a slow link).
+      for (let i = 0; i < slices.length; i++) {
+        if (i === next || i === shown || Math.abs(i - next) <= PRELOAD) continue;
+        const other = slices[i];
+        if (other.hasAttribute('src') && !other.complete) other.removeAttribute('src');
+      }
+
+      if (img.complete && img.naturalWidth > 0) {
+        paintSlice(next);
+      } else if (img.decode) {
+        // a newer request supersedes this one: test `current` again on resolve
+        img.decode().then(() => { if (current === next) paintSlice(next); },
+                          () => { if (current === next) paintSlice(next); });
+      } else {
+        paintSlice(next);
       }
       paint();
     }

@@ -117,6 +117,10 @@ slices, no accidental page scroll).
 - **Scrubber on the right** of the image: click or drag to move, or focus it and use the
   arrow keys.
 - **Keyboard** on the image: ↑ ↓, Page↑ Page↓, Home / End.
+- **Slow link**: the frame keeps the previous slice until the next one is decoded, so a
+  fast scroll never shows a black frame; the counter is the position asked for, the
+  image catches up. Superseded downloads are cancelled, so the slice you stop on does
+  not wait behind every slice you flew past.
 - **Autoplay** (▶): 240 ms per slice, stops at the end.
 - Settings at the top of `assets/app.js`: `SLICE_STEP` (wheel pixels per slice, 90),
   `DRAG_SLICES` (slices crossed by a full-height drag, 8) and `PRELOAD` (slices decoded
