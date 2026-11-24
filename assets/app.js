@@ -16,6 +16,13 @@
   /* ?catherine-mode=1 unwraps a case for the author. See assets/home.js. */
   const PREVIEW = new URLSearchParams(location.search).has('catherine-mode');
 
+  /* ?skip=2 keeps one slice out of two (2.5 mm instead of 1.25 mm), ?skip=4 one
+     out of four. Only the kept slices are fetched, so the weight drops with it.
+     A reading option, not a build option: the files on disk stay complete. */
+  const SKIP = Math.min(16, Math.max(1,
+    parseInt(new URLSearchParams(location.search).get('skip') || '1', 10) || 1));
+  const decimate = (list) => (SKIP === 1 ? list : list.filter((_, i) => i % SKIP === 0));
+
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
@@ -357,7 +364,7 @@
 
   function renderStage(serie) {
     const stage = $('#stage');
-    const files = state.manifests.get(serie.id) || [];
+    const files = decimate(state.manifests.get(serie.id) || []);
     const total = files.length;
 
     const viewer = document.createElement('div');
@@ -442,7 +449,7 @@
         const rest = [];
         for (const other of (state.data?.series || [])) {
           if (other.id === serie.id) continue;
-          for (const f of (state.manifests.get(other.id) || [])) rest.push(imageUrl(other, f));
+          for (const f of decimate(state.manifests.get(other.id) || [])) rest.push(imageUrl(other, f));
         }
         prefetch.plan(priority, rest);
       }, 350);
@@ -450,8 +457,9 @@
 
     const meta = $('#serie-meta');
     if (meta) {
-      meta.textContent = serie.note || '';
-      meta.hidden = !serie.note;
+      const note = serie.note || '';
+      meta.textContent = note + (SKIP > 1 ? (note ? ' · ' : '') + `1 slice out of ${SKIP}` : '');
+      meta.hidden = !meta.textContent;
     }
 
     if (total) wireViewer({ viewer, stack, files, total, serie });

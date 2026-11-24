@@ -102,6 +102,20 @@ It is an **unlisted** URL, not a private one: the repository is public, so the i
 and the JSON are readable by anyone. It only keeps the calendar from being spoiled for
 the visitors who get the normal link.
 
+### Read with fewer slices
+
+Add `skip` to a case URL to keep one slice out of n. Only the kept slices are
+downloaded, so the weight and the scrolling length drop with it:
+
+```
+…/cases/thorax-w1/?skip=2     # 2.5 mm, 241 slices instead of 481
+…/cases/thorax-w1/?skip=4     # 5 mm, 121 slices
+```
+
+A reading option, not a build option: the images on disk stay complete, the technical line
+under the frame says “1 slice out of 2”, and it combines with `catherine-mode` on a wrapped
+case. Coarse steps are fine to skim a stack, less so to look for a 3 mm nodule.
+
 ### Reading comfort
 
 The viewer is a fixed frame, not a scroll area: one slice is visible at a time and
