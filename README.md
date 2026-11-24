@@ -144,7 +144,9 @@ slices, no accidental page scroll).
   background (4 at a time), then the other series of the case. No connection check: the
   calendar is meant for readers on a good link. The stream never pauses: scrolling,
   scrubbing or dragging does not hold it back, it only takes a back seat on the shared
-  connections. A 481-slice series is ~25 MB.
+  connections. A 481-slice series is ~25 MB. When the reader stops moving, the missing
+  slices are re-queued around the current slice, so jumping to the bottom makes the
+  bottom arrive first.
 - **Slow link**: the frame keeps the previous slice until the next one is decoded, so a
   fast scroll never shows a black frame; the counter is the position asked for, the
   image catches up. Superseded downloads are cancelled, so the slice you stop on does

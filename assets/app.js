@@ -105,6 +105,7 @@
     const queued = new Set();
     let queue = [];
     let active = 0;
+    const inflight = new Set();
     let watch = new Set();   // urls of the series on screen
     let watchDone = 0;
     let notify = null;
@@ -117,9 +118,11 @@
         queued.delete(u);
         if (done.has(u)) continue;
         active += 1;
+        inflight.add(u);
         const img = new Image();
         img.decoding = 'async';
         const finish = () => {
+          inflight.delete(u);
           done.add(u);
           active -= 1;
           if (watch.has(u)) { watchDone += 1; report(); }
@@ -133,7 +136,7 @@
 
     function enqueue(urls) {
       for (const u of urls) {
-        if (done.has(u) || queued.has(u)) continue;
+        if (done.has(u) || queued.has(u) || inflight.has(u)) continue;
         queued.add(u);
         queue.push({ url: u });
       }
@@ -410,6 +413,8 @@
   const DRAG_SLICES = 8;  // a full-height drag crosses about this many slices
   const TAP_TOP = 0.4;    // top 40 % of the frame = previous slice
 
+  let replan = () => {};
+
   function renderStage(serie) {
     const stage = $('#stage');
     const files = decimate(state.manifests.get(serie.id) || []);
@@ -486,13 +491,13 @@
     }
     clearTimeout(state.prefetchTimer);
     if (total) {
-      state.prefetchTimer = setTimeout(() => {
-        const key = CASE_ID + ':' + serie.id;
-        const center = Math.min(files.length - 1, Math.max(0, state.positions[key] || 0));
+      const key = CASE_ID + ':' + serie.id;
+      replan = (center) => {
+        const at = Math.min(files.length - 1, Math.max(0, center));
         const priority = [];
         for (let d = 0; d < files.length; d++) {
-          if (center + d < files.length) priority.push(imageUrl(serie, files[center + d]));
-          if (d && center - d >= 0) priority.push(imageUrl(serie, files[center - d]));
+          if (at + d < files.length) priority.push(imageUrl(serie, files[at + d]));
+          if (d && at - d >= 0) priority.push(imageUrl(serie, files[at - d]));
         }
         const rest = [];
         for (const other of (state.data?.series || [])) {
@@ -500,6 +505,9 @@
           for (const f of decimate(state.manifests.get(other.id) || [])) rest.push(imageUrl(other, f));
         }
         prefetch.plan(priority, rest);
+      };
+      state.prefetchTimer = setTimeout(() => {
+        replan(state.positions[key] || 0);
       }, 350);
     }
 
@@ -510,10 +518,10 @@
       meta.hidden = !meta.textContent;
     }
 
-    if (total) wireViewer({ viewer, stack, files, total, serie });
+    if (total) wireViewer({ viewer, stack, files, total, serie, replan });
   }
 
-  function wireViewer({ viewer, stack, files, total, serie }) {
+  function wireViewer({ viewer, stack, files, total, serie, replan }) {
     const posEl = $('.pos', viewer);
     const countEl = $('.of', viewer);
     const scrub = $('.scrub', viewer);
@@ -659,10 +667,17 @@
       img.addEventListener('error', ready, { once: true });
     }
 
+    let settleTimer = 0;
+
     function show(i) {
       const next = Math.min(maxIndex, Math.max(0, i));
       current = next;
       paint();
+
+      // once the reader stops, the images still missing are fetched around
+      // where the eye is — scroll to the bottom, the bottom arrives first
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => replan(current), 250);
 
       const now = (window.performance || Date).now();
       const gap = interval();
