@@ -144,11 +144,13 @@
     }
 
     return {
-      plan(priority, rest) {
+      // `watched` is what the status line counts: the whole series, even when
+      // the queue only holds the coarse pass
+      plan(priority, rest, watched) {
         queue = [];
         queued.clear();
-        watch = new Set(priority);
-        watchDone = priority.reduce((n, u) => n + (done.has(u) ? 1 : 0), 0);
+        watch = new Set(watched || priority);
+        watchDone = [...watch].reduce((n, u) => n + (done.has(u) ? 1 : 0), 0);
         enqueue(priority);
         enqueue(rest);
         report();
@@ -511,9 +513,9 @@
         if (coarse) {
           const stride = priority.filter((_, i) => i % COARSE === 0);
           const fill = priority.filter((_, i) => i % COARSE !== 0);
-          prefetch.plan(stride, fill.concat(rest));
+          prefetch.plan(stride, fill.concat(rest), priority);
         } else {
-          prefetch.plan(priority, rest);
+          prefetch.plan(priority, rest, priority);
         }
       };
       state.prefetchTimer = setTimeout(() => {
