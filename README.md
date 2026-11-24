@@ -117,6 +117,10 @@ slices, no accidental page scroll).
 - **Scrubber on the right** of the image: click or drag to move, or focus it and use the
   arrow keys.
 - **Keyboard** on the image: ↑ ↓, Page↑ Page↓, Home / End.
+- **Prefetch**: once the first slice is on screen, the whole series is streamed in the
+  background (4 at a time), then the other series of the case. No connection check: the
+  calendar is meant for readers on a good link. Moving the stack pauses the stream for a
+  moment so the slice under the cursor keeps priority. A 481-slice series is ~25 MB.
 - **Slow link**: the frame keeps the previous slice until the next one is decoded, so a
   fast scroll never shows a black frame; the counter is the position asked for, the
   image catches up. Superseded downloads are cancelled, so the slice you stop on does

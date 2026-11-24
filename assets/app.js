@@ -67,6 +67,63 @@
   const imageUrl = (serie, file) =>
     url(String(serie.folder).replace(/\/+$/, '') + '/' + encodeURIComponent(file));
 
+  /* ---------------- Background prefetch ----------------
+     Once the first slice is on screen, the whole series is streamed, then the
+     other series of the case: a radiologist reads on a good link and a black
+     frame mid-stack is not acceptable, so there is no connection check here.
+     The bytes go through throwaway Image objects, so they land in the HTTP
+     cache; the DOM images only get a src near the cursor, which keeps decoded
+     memory bounded. Interacting pauses the stream for a moment.
+     ------------------------------------------------- */
+  const prefetch = (() => {
+    const CONCURRENCY = 4;
+    const done = new Set();
+    const queued = new Set();
+    let queue = [];
+    let active = 0;
+    let pausedUntil = 0;
+    let timer = 0;
+
+    function pump() {
+      clearTimeout(timer);
+      if (Date.now() < pausedUntil) {
+        timer = setTimeout(pump, pausedUntil - Date.now());
+        return;
+      }
+      while (active < CONCURRENCY && queue.length) {
+        const { url: u } = queue.shift();
+        queued.delete(u);
+        if (done.has(u)) continue;
+        active += 1;
+        const img = new Image();
+        img.decoding = 'async';
+        const finish = () => { done.add(u); active -= 1; pump(); };
+        img.onload = finish;
+        img.onerror = finish;
+        img.src = u;
+      }
+    }
+
+    function enqueue(urls) {
+      for (const u of urls) {
+        if (done.has(u) || queued.has(u)) continue;
+        queued.add(u);
+        queue.push({ url: u });
+      }
+      pump();
+    }
+
+    return {
+      plan(priority, rest) {
+        queue = [];
+        queued.clear();
+        enqueue(priority);
+        enqueue(rest);
+      },
+      hold(ms) { pausedUntil = Math.max(pausedUntil, Date.now() + ms); },
+    };
+  })();
+
   /* ---------------- Form ----------------
      The answer form is our own <form>, posting straight to Google's
      formResponse endpoint: same Google Form, same Sheet, but in English
@@ -367,6 +424,30 @@
 
     stage.replaceChildren(viewer);
 
+    // the viewer appears once the first slice is ready: no black rectangle
+    if (total) {
+      viewer.style.opacity = '0';
+      viewer.style.transition = 'opacity 140ms ease';
+    }
+    clearTimeout(state.prefetchTimer);
+    if (total) {
+      state.prefetchTimer = setTimeout(() => {
+        const key = CASE_ID + ':' + serie.id;
+        const center = Math.min(files.length - 1, Math.max(0, state.positions[key] || 0));
+        const priority = [];
+        for (let d = 0; d < files.length; d++) {
+          if (center + d < files.length) priority.push(imageUrl(serie, files[center + d]));
+          if (d && center - d >= 0) priority.push(imageUrl(serie, files[center - d]));
+        }
+        const rest = [];
+        for (const other of (state.data?.series || [])) {
+          if (other.id === serie.id) continue;
+          for (const f of (state.manifests.get(other.id) || [])) rest.push(imageUrl(other, f));
+        }
+        prefetch.plan(priority, rest);
+      }, 350);
+    }
+
     const meta = $('#serie-meta');
     if (meta) {
       meta.textContent = serie.note || '';
@@ -434,9 +515,17 @@
       slices[shown].setAttribute('aria-hidden', 'false');
     }
 
+    let revealed = false;
+    function reveal() {
+      if (revealed) return;
+      revealed = true;
+      viewer.style.opacity = '1';
+    }
+
     function show(i) {
       const next = Math.min(maxIndex, Math.max(0, i));
       current = next;
+      prefetch.hold(250);
 
       const img = slices[next];
       if (!img.hasAttribute('src')) img.src = imageUrl(serie, files[next]);
@@ -452,12 +541,14 @@
 
       if (img.complete && img.naturalWidth > 0) {
         paintSlice(next);
+        reveal();
       } else if (img.decode) {
         // a newer request supersedes this one: test `current` again on resolve
-        img.decode().then(() => { if (current === next) paintSlice(next); },
-                          () => { if (current === next) paintSlice(next); });
+        const ready = () => { if (current === next) { paintSlice(next); reveal(); } };
+        img.decode().then(ready, ready);
       } else {
         paintSlice(next);
+        reveal();
       }
       paint();
     }
