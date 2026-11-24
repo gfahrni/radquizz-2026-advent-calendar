@@ -13,15 +13,23 @@
   const CASE_ID = document.body.dataset.case || '';
   const VERSION = document.body.dataset.version || '';
 
-  /* ?catherine-mode=1 unwraps a case for the author. See assets/home.js. */
-  const PREVIEW = new URLSearchParams(location.search).has('catherine-mode');
+  const params = new URLSearchParams(location.search);
 
-  /* ?skip=2 keeps one slice out of two (2.5 mm instead of 1.25 mm), ?skip=4 one
-     out of four. Only the kept slices are fetched, so the weight drops with it.
-     A reading option, not a build option: the files on disk stay complete. */
-  const SKIP = Math.min(16, Math.max(1,
-    parseInt(new URLSearchParams(location.search).get('skip') || '1', 10) || 1));
+  /* ?catherine-mode=1 unwraps a case for the author. See assets/home.js. */
+  const PREVIEW = params.has('catherine-mode');
+
+  /* One slice out of two by default: 2.5 mm instead of 1.25 mm, half the weight
+     and half the scrolling. ?skip=1 reads every slice, ?skip=4 one out of four.
+     Only the kept slices are fetched. A reading option, not a build option: the
+     files on disk stay complete. */
+  const skipped = parseInt(params.get('skip') ?? '2', 10);
+  const SKIP = Number.isFinite(skipped) ? Math.min(16, Math.max(1, skipped)) : 2;
   const decimate = (list) => (SKIP === 1 ? list : list.filter((_, i) => i % SKIP === 0));
+
+  /* ?scroll_speed=4 (default) divides the wheel/drag distance per slice: 4
+     times faster than the original 90 px. ?scroll_speed=1 for the precise one. */
+  const sped = parseFloat(params.get('scroll_speed') ?? '4');
+  const SPEED = Number.isFinite(sped) ? Math.min(16, Math.max(0.5, sped)) : 4;
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -33,7 +41,7 @@
     form: { formId: '', entries: {} },
     serie: null,
     manifests: new Map(),
-    positions: store.get('positions.v3', {}),
+    positions: {},
     cineloop: null,
     pid: participantId(),
   };
@@ -479,7 +487,7 @@
     let current = 0;
 
     // a drag of the whole frame crosses the series in one go, whatever its length
-    const dragStep = () => Math.max(30, Math.min(60, (stack.clientHeight || 1) / DRAG_SLICES));
+    const dragStep = () => Math.max(30, Math.min(60, (stack.clientHeight || 1) / DRAG_SLICES)) / SPEED;
 
     function preload(center) {
       for (let d = -PRELOAD; d <= PRELOAD; d++) {
@@ -620,9 +628,10 @@
       stop();
       if (dy * acc < 0) acc = 0;                    // direction change
       acc += dy;
-      const steps = Math.trunc(acc / SLICE_STEP);
+      const step = SLICE_STEP / SPEED;
+      const steps = Math.trunc(acc / step);
       if (steps) {
-        acc -= steps * SLICE_STEP;
+        acc -= steps * step;
         show(current + steps);
       }
       resetAcc();
@@ -718,9 +727,8 @@
     stack.addEventListener('pointerup', endPointer);
     stack.addEventListener('pointercancel', endPointer);
 
-    /* --- restore the reading position --- */
-    const remembered = Math.min(maxIndex, Math.max(0, Math.round(Number(state.positions[key]) || 0)));
-    show(remembered);
+    /* every load starts on the first slice */
+    show(0);
   }
 
   /* ---------------- Switching series ---------------- */
@@ -851,7 +859,6 @@
         if (id && id !== state.serie?.id) selectSerie(id, { push: false });
       });
 
-      window.addEventListener('pagehide', () => store.set('positions.v3', state.positions));
     } catch (err) {
       console.error(err);
       $('#stage').innerHTML = `<div class="notice"><strong>Could not load this case.</strong><br>

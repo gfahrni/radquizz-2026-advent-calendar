@@ -104,17 +104,23 @@ the visitors who get the normal link.
 
 ### Read with fewer slices
 
-Add `skip` to a case URL to keep one slice out of n. Only the kept slices are
-downloaded, so the weight and the scrolling length drop with it:
+**One slice out of two is the default** (2.5 mm instead of 1.25 mm): half the weight,
+half the scrolling. `skip` overrides it, and only the kept slices are downloaded:
 
 ```
-…/cases/thorax-w1/?skip=2     # 2.5 mm, 241 slices instead of 481
+…/cases/thorax-w1/?skip=1     # every slice, 1.25 mm, 481 slices
 …/cases/thorax-w1/?skip=4     # 5 mm, 121 slices
 ```
 
 A reading option, not a build option: the images on disk stay complete, the technical line
 under the frame says “1 slice out of 2”, and it combines with `catherine-mode` on a wrapped
 case. Coarse steps are fine to skim a stack, less so to look for a 3 mm nodule.
+
+### Scroll speed
+
+`?scroll_speed=4` is the default: four times the original 90 px per slice on the wheel and
+four times the slices per drag. `?scroll_speed=1` gives back the slow, surgical one, `8`
+is a blur. It scales both gestures, the keyboard and the tap zones still move one slice.
 
 ### Reading comfort
 
@@ -140,9 +146,10 @@ slices, no accidental page scroll).
   image catches up. Superseded downloads are cancelled, so the slice you stop on does
   not wait behind every slice you flew past.
 - **Autoplay** (▶): 240 ms per slice, stops at the end.
-- Settings at the top of `assets/app.js`: `SLICE_STEP` (wheel pixels per slice, 90),
-  `DRAG_SLICES` (slices crossed by a full-height drag, 8) and `PRELOAD` (slices decoded
-  on each side, 4).
+- Feet: `SLICE_STEP` (wheel pixels per slice, 90) and `DRAG_SLICES` (slices crossed by a
+  full-height drag, 8) at the top of `assets/app.js`, both divided by `?scroll_speed`
+  (default 4). `PRELOAD` (slices decoded on each side, 4) too.
+- Every load starts on slice 1: the reading position is not kept between visits.
 
 Because the frame swallows the gesture, a swipe on the image never scrolls the page.
 Scroll from the text above the frame, from the hint, or from the button below it.
