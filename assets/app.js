@@ -26,10 +26,16 @@
   const SKIP = Number.isFinite(skipped) ? Math.min(16, Math.max(1, skipped)) : 2;
   const decimate = (list) => (SKIP === 1 ? list : list.filter((_, i) => i % SKIP === 0));
 
-  /* ?scroll_speed=4 (default) divides the wheel/drag distance per slice: 4
-     times faster than the original 90 px. ?scroll_speed=1 for the precise one. */
-  const sped = parseFloat(params.get('scroll_speed') ?? '4');
-  const SPEED = Number.isFinite(sped) ? Math.min(16, Math.max(0.5, sped)) : 4;
+  /* Two gestures, two speeds. The wheel (a desk, a trackpad) keeps the precise
+     90 px per slice; the drag (a thumb, a mouse) crosses four times as many
+     slices, which is what makes the stack usable on a phone.
+     ?wheel_speed=4 / ?scroll_speed=1 tune either one. */
+  const clampSpeed = (v, fallback) => {
+    const n = parseFloat(v);
+    return Number.isFinite(n) ? Math.min(16, Math.max(0.5, n)) : fallback;
+  };
+  const WHEEL_SPEED = clampSpeed(params.get('wheel_speed') ?? '1', 1);
+  const DRAG_SPEED = clampSpeed(params.get('scroll_speed') ?? '4', 4);
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -487,7 +493,7 @@
     let current = 0;
 
     // a drag of the whole frame crosses the series in one go, whatever its length
-    const dragStep = () => Math.max(30, Math.min(60, (stack.clientHeight || 1) / DRAG_SLICES)) / SPEED;
+    const dragStep = () => Math.max(30, Math.min(60, (stack.clientHeight || 1) / DRAG_SLICES)) / DRAG_SPEED;
 
     function preload(center) {
       for (let d = -PRELOAD; d <= PRELOAD; d++) {
@@ -628,7 +634,7 @@
       stop();
       if (dy * acc < 0) acc = 0;                    // direction change
       acc += dy;
-      const step = SLICE_STEP / SPEED;
+      const step = SLICE_STEP / WHEEL_SPEED;
       const steps = Math.trunc(acc / step);
       if (steps) {
         acc -= steps * step;

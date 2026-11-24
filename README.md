@@ -118,9 +118,10 @@ case. Coarse steps are fine to skim a stack, less so to look for a 3 mm nodule.
 
 ### Scroll speed
 
-`?scroll_speed=4` is the default: four times the original 90 px per slice on the wheel and
-four times the slices per drag. `?scroll_speed=1` gives back the slow, surgical one, `8`
-is a blur. It scales both gestures, the keyboard and the tap zones still move one slice.
+Two gestures, two speeds: the **wheel** keeps the precise 90 px per slice (a mouse, a
+trackpad), while the **drag** crosses four times as many slices — that is what makes the
+stack usable under a thumb. `?wheel_speed=4` speeds the wheel up, `?scroll_speed=1` slows
+the drag down. The keyboard and the tap zones always move one slice.
 
 ### Reading comfort
 
@@ -147,8 +148,9 @@ slices, no accidental page scroll).
   not wait behind every slice you flew past.
 - **Autoplay** (▶): 240 ms per slice, stops at the end.
 - Feet: `SLICE_STEP` (wheel pixels per slice, 90) and `DRAG_SLICES` (slices crossed by a
-  full-height drag, 8) at the top of `assets/app.js`, both divided by `?scroll_speed`
-  (default 4). `PRELOAD` (slices decoded on each side, 4) too.
+  full-height drag, 8) at the top of `assets/app.js`; the wheel is divided by
+  `?wheel_speed` (default 1), the drag by `?scroll_speed` (default 4). `PRELOAD` (slices
+  decoded on each side, 4) too.
 - Every load starts on slice 1: the reading position is not kept between visits.
 
 Because the frame swallows the gesture, a swipe on the image never scrolls the page.
