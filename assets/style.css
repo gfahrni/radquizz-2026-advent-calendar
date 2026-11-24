@@ -610,13 +610,6 @@ a { color: var(--accent); }
   color: var(--accent);
   font-weight: 650;
 }
-.case-card.is-last .case-kicker::after {
-  content: " · continue";
-  color: var(--ink-3);
-  font-weight: 500;
-  letter-spacing: 0;
-  text-transform: none;
-}
 .case-body h2 {
   font-size: 1.06rem;
   letter-spacing: -.012em;

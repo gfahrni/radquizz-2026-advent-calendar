@@ -812,7 +812,6 @@
       state.form = { ...state.form, ...(formCfg || {}) };
 
       if (VERSION) $('#version').textContent = 'v' + VERSION;
-      store.set('lastCase', CASE_ID);
 
       // A case can stay wrapped: the page still exists, but shows the closed window.
       if (data.open === false && !PREVIEW) { renderLocked(data); return; }

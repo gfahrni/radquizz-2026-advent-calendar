@@ -5,7 +5,7 @@
 (() => {
   'use strict';
 
-  const { initTheme, store } = window.RQ;
+  const { initTheme } = window.RQ;
   const $ = (sel, root = document) => root.querySelector(sel);
 
   /* ?catherine-mode=1 opens every window for the author, whatever "open" says
@@ -117,10 +117,6 @@
         if (brand) brand.href = './?catherine-mode=1';
       }
 
-      // small comfort: highlight the last case opened
-      const last = store.get('lastCase', null);
-      const el = last && grid.querySelector(`.case-card[data-id="${last}"]`);
-      if (el) el.classList.add('is-last');
     } catch (err) {
       console.error(err);
       grid.innerHTML = `<div class="notice"><strong>Could not load the case list.</strong><br>
