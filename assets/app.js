@@ -104,6 +104,11 @@
     let active = 0;
     let pausedUntil = 0;
     let timer = 0;
+    let watch = new Set();   // urls of the series on screen
+    let watchDone = 0;
+    let notify = null;
+
+    const report = () => { if (notify) notify(watchDone, watch.size); };
 
     function pump() {
       clearTimeout(timer);
@@ -118,7 +123,12 @@
         active += 1;
         const img = new Image();
         img.decoding = 'async';
-        const finish = () => { done.add(u); active -= 1; pump(); };
+        const finish = () => {
+          done.add(u);
+          active -= 1;
+          if (watch.has(u)) { watchDone += 1; report(); }
+          pump();
+        };
         img.onload = finish;
         img.onerror = finish;
         img.src = u;
@@ -138,12 +148,41 @@
       plan(priority, rest) {
         queue = [];
         queued.clear();
+        watch = new Set(priority);
+        watchDone = priority.reduce((n, u) => n + (done.has(u) ? 1 : 0), 0);
         enqueue(priority);
         enqueue(rest);
+        report();
       },
+      onProgress(fn) { notify = fn; report(); },
       hold(ms) { pausedUntil = Math.max(pausedUntil, Date.now() + ms); },
     };
   })();
+
+  /* ---------------- Loading status ----------------
+     Small line in the top-left corner: "loading 12/241 slices", the count of
+     the series on screen. It fades out when everything is cached.
+     ------------------------------------------------- */
+  function initLoadStatus() {
+    const el = document.createElement('p');
+    el.className = 'load-status';
+    el.setAttribute('aria-hidden', 'true');
+    document.body.append(el);
+
+    let hide = 0;
+    prefetch.onProgress((done, total) => {
+      if (!total) return;
+      el.textContent = `loading ${done}/${total} slices`;
+      clearTimeout(hide);
+      if (done >= total) {
+        hide = setTimeout(() => el.classList.remove('is-on'), 450);
+      } else {
+        el.classList.add('is-on');
+      }
+    });
+  }
+
+  initLoadStatus();
 
   /* ---------------- Form ----------------
      The answer form is our own <form>, posting straight to Google's
