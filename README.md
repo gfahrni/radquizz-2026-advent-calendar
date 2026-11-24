@@ -81,6 +81,13 @@ One case = one JSON file + one image folder per series.
 The door becomes clickable on the home page, and its page stops showing the wrapped
 window. Until then the page exists and says “This window is still wrapped.”
 
+### Closing a window again
+
+There is no date logic: the build reads `"open"` as it is. To wrap a door that was
+published early, set `"open": false` (keep `opensOn`), then `npm run build`, commit and
+push. The door turns back into a numbered window and the case page shows “This window
+opens on …”; the images and the JSON stay in place.
+
 ### Reading comfort
 
 The viewer is a fixed frame, not a scroll area: one slice is visible at a time and
@@ -234,11 +241,16 @@ images/thorax-w1/axial/001.jpg, 002.jpg, …
    works: `IMG_1.jpg`, `IMG_2.jpg`, `IMG_10.jpg`).
 3. `npm run build`, then commit + push.
 
-The placeholders currently in the repository are generated:
+The six wrapped windows still hold generated placeholders:
 
 ```bash
-python3 tools/make-placeholders.py     # synthetic slices for every case
+python3 tools/make-placeholders.py     # synthetic slices, wrapped cases only
 ```
+
+Cases 1 and 2 now carry their real stacks (`images/thorax-w1/lung`,
+`…/mediastinal`, `images/cardio-w1/axial`). Their clinical text is still `X` in `stem`,
+with neutral titles (`Case 1`, `Case 2`): edit `content/cases/thorax-w1.json` and
+`cardio-w1.json`, then `npm run build`.
 
 ### Image weight
 

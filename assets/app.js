@@ -318,16 +318,19 @@
         <code>${escapeHtml(serie.folder)}</code>, then run
         <code>npm run build</code>.</p>`;
     } else {
+      // Only the first slices get a src. The others are filled in by preload()
+      // as the reader moves: with a 481-slice stack, setting every src at once
+      // made the browser fetch the whole series on load (12 MB before the
+      // first slice was readable, on a phone).
       files.forEach((file, i) => {
         const img = document.createElement('img');
         img.className = 'slice' + (i === 0 ? ' is-active' : '');
-        img.src = imageUrl(serie, file);
         img.alt = `Slice ${i + 1} of ${total}`;
         img.decoding = 'async';
         img.draggable = false;
         img.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
         if (i === 0) img.fetchPriority = 'high';
-        if (i > 3) img.loading = 'lazy';
+        if (i <= PRELOAD) img.src = imageUrl(serie, file);
         stack.append(img);
       });
     }
@@ -380,7 +383,6 @@
     const key = CASE_ID + ':' + serie.id;
     const maxIndex = total - 1;
     const slices = $$('.slice', stack);
-    const preloaded = new Set();
     const decoded = new Set();
     let current = 0;
 
@@ -392,15 +394,12 @@
         const i = center + d;
         if (i < 0 || i > maxIndex) continue;
         const img = slices[i];
-        if (img && img.decode && !decoded.has(i)) {
+        if (!img) continue;
+        if (!img.hasAttribute('src')) img.src = imageUrl(serie, files[i]);
+        if (img.decode && !decoded.has(i)) {
           decoded.add(i);
           img.decode().catch(() => {});
         }
-        if (preloaded.has(i)) continue;
-        const probe = new Image();
-        probe.decoding = 'async';
-        probe.src = imageUrl(serie, files[i]);
-        preloaded.add(i);
       }
     }
 

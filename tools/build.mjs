@@ -11,7 +11,7 @@
  * Run it after adding images, cases, series, or flipping a case from
  * "open": false to "open": true.
  */
-import { readdir, writeFile, readFile, mkdir, stat } from 'node:fs/promises';
+import { readdir, writeFile, readFile, mkdir, stat, open } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -45,6 +45,42 @@ async function listImages(dir) {
   } catch { return []; }
 }
 
+/* Pixel size of a JPEG or PNG, read from the file header. Used for the
+   og:image:width/height tags so a LinkedIn card is not cropped by mistake. */
+async function imageSize(file) {
+  let buf;
+  try {
+    const fh = await open(file);
+    buf = Buffer.alloc(1024 * 1024);
+    const { bytesRead } = await fh.read(buf, 0, buf.length, 0);
+    await fh.close();
+    buf = buf.subarray(0, bytesRead);
+  } catch { return null; }
+
+  if (buf.length >= 24 && buf.readUInt32BE(0) === 0x89504e47) {
+    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+  }
+
+  if (buf.length >= 4 && buf[0] === 0xff && buf[1] === 0xd8) {
+    let i = 2;
+    while (i + 9 < buf.length) {
+      if (buf[i] !== 0xff) { i += 1; continue; }
+      const marker = buf[i + 1];
+      if (marker === 0xd8 || marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
+        i += 2; continue;
+      }
+      const len = buf.readUInt16BE(i + 2);
+      if (len < 2) return null;
+      // SOF0…SOF15, except DHT (c4), JPG (c8) and DAC (cc)
+      if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+        return { w: buf.readUInt16BE(i + 7), h: buf.readUInt16BE(i + 5) };
+      }
+      i += 2 + len;
+    }
+  }
+  return null;
+}
+
 async function buildManifests(caseData, warnings) {
   let total = 0;
   let totalBytes = 0;
@@ -71,7 +107,9 @@ async function buildManifests(caseData, warnings) {
     for (const f of files) bytes += (await stat(path.join(abs, f))).size;
     totalBytes += bytes;
     total += files.length;
-    if (!thumb) thumb = folder + '/' + files[0];
+    // the door card and the LinkedIn preview use a middle slice: the first one
+    // is usually the top of the stack (neck, apices) and looks like nothing.
+    if (!thumb) thumb = folder + '/' + files[Math.floor((files.length - 1) / 2)];
 
     await writeFile(path.join(abs, 'manifest.json'), JSON.stringify(files, null, 2) + '\n');
 
@@ -175,11 +213,16 @@ async function main() {
     const pageTitle = data.open ? data.title : 'A wrapped window';
     const pageStem = data.open ? (data.stem || '') : `This window opens on ${data.opensOn}.`;
 
+    const ogLocal = thumb ? path.join(ROOT, thumb) : path.join(ROOT, 'assets', 'og-image.png');
+    const ogBox = (await imageSize(ogLocal)) || { w: 1200, h: 630 };
+
     const html = fillTemplate(template, {
       TITLE: esc(pageTitle),
       STEM: esc(pageStem),
       URL: esc(homepage ? new URL(`cases/${data.id}/`, homepage).href : `cases/${data.id}/`),
       OG_IMAGE: esc(ogImage),
+      OG_W: String(ogBox.w),
+      OG_H: String(ogBox.h),
       CASE_ID: esc(data.id),
       BASE: '../../',
       VERSION: esc(version),

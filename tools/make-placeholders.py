@@ -5,9 +5,9 @@ Generate the placeholder slices used for development.
     python3 tools/make-placeholders.py
 
 These are NOT radiographs: just synthetic dark slices so the scroller,
-tabs and thumbnails can be tested. Replace the folders under
-images/<case>/<series>/ with your own JPGs (001.jpg, 002.jpg, …) and run
-`npm run build`.
+tabs and thumbnails can be tested. Only the cases that still wrap a window
+are listed below. Replace the folders under images/<case>/<series>/ with
+your own JPGs (001.jpg, 002.jpg, …) and run `npm run build`.
 """
 import math
 import os
@@ -20,9 +20,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SIZE = 900
 
 # case -> [(series id, plane, number of slices)]
+# thorax-w1 and cardio-w1 now hold real stacks (images/thorax-w1/lung, …):
+# they are deliberately absent, so running this never touches them.
 CASES = {
-    "thorax-w1": [("axial", "axial", 8), ("coronal", "coronal", 8)],
-    "cardio-w1": [("axial", "axial", 8), ("coronal", "coronal", 8)],
     "thorax-w2": [("axial", "axial", 8), ("coronal", "coronal", 8)],
     "cardio-w2": [("axial", "axial", 8), ("coronal", "coronal", 8)],
     "thorax-w3": [("axial", "axial", 8), ("coronal", "coronal", 8)],
