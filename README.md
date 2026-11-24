@@ -136,7 +136,9 @@ slices, no accidental page scroll).
   drag crosses the series.
 - **Tap** on a touch screen: the lower part goes forward, the upper part goes back.
 - **Scrubber on the right** of the image: click or drag to move, or focus it and use the
-  arrow keys.
+  arrow keys. While you drag, the counter and the thumb follow the finger but the image is
+  requested at most every 90 ms (more when the link is slow), one at a time, so it keeps
+  updating instead of freezing; on release it goes straight to the exact slice.
 - **Keyboard** on the image: ↑ ↓, Page↑ Page↓, Home / End.
 - **Prefetch**: once the first slice is on screen, the whole series is streamed in the
   background (4 at a time), then the other series of the case. No connection check: the

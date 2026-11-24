@@ -104,6 +104,7 @@
     let active = 0;
     let pausedUntil = 0;
     let timer = 0;
+    const inflight = new Map(); // probe image -> url
     let watch = new Set();   // urls of the series on screen
     let watchDone = 0;
     let notify = null;
@@ -123,7 +124,9 @@
         active += 1;
         const img = new Image();
         img.decoding = 'async';
+        inflight.set(img, u);
         const finish = () => {
+          inflight.delete(img);
           done.add(u);
           active -= 1;
           if (watch.has(u)) { watchDone += 1; report(); }
@@ -155,7 +158,21 @@
         report();
       },
       onProgress(fn) { notify = fn; report(); },
-      hold(ms) { pausedUntil = Math.max(pausedUntil, Date.now() + ms); },
+      // the reader took over: drop the probes in flight so the slice under the
+      // cursor gets the whole connection, and put them back in the queue
+      hold(ms) {
+        pausedUntil = Math.max(pausedUntil, Date.now() + ms);
+        if (!inflight.size) return;
+        for (const [img, u] of inflight) {
+          img.onload = null;
+          img.onerror = null;
+          img.src = '';
+          active -= 1;
+          if (!done.has(u) && !queued.has(u)) { queued.add(u); queue.unshift({ url: u }); }
+        }
+        inflight.clear();
+        if (active < 0) active = 0;
+      },
     };
   })();
 
@@ -534,7 +551,16 @@
     // a drag of the whole frame crosses the series in one go, whatever its length
     const dragStep = () => Math.max(30, Math.min(60, (stack.clientHeight || 1) / DRAG_SLICES)) / DRAG_SPEED;
 
+    let lastPreloadAt = 0;
+
     function preload(center) {
+      // During a scrubber drag this is called ~60 times a second, and each
+      // call queues nine more images: at 2 MB/s they filled the pipe and the
+      // slice under the cursor waited behind all of them.
+      const t = (window.performance || Date).now();
+      if (t - lastPreloadAt < 150) return;
+      lastPreloadAt = t;
+
       for (let d = -PRELOAD; d <= PRELOAD; d++) {
         const i = center + d;
         if (i < 0 || i > maxIndex) continue;
@@ -583,35 +609,106 @@
       viewer.style.opacity = '1';
     }
 
-    function show(i) {
-      const next = Math.min(maxIndex, Math.max(0, i));
-      current = next;
-      prefetch.hold(250);
+    /* A scrubber drag fires ~60 times a second, and every call would fetch a
+       slice and cancel the previous one: none of them had time to arrive, so
+       the image froze on a stale slice until the finger was lifted. Big jumps
+       are therefore coalesced to one request every COALESCE ms; stepping by
+       one stays immediate. */
+    /* A scrubber drag fires ~60 times a second. The counter and the scrubber
+       follow it immediately, but asking for a new image every time made each
+       request cancel the previous one before it arrived: the frame stayed on a
+       stale slice until the finger was lifted. Images are therefore requested
+       at most every COALESCE ms on a big jump; one-slice steps stay immediate.
+       Requests already issued for the slice we stopped on are never dropped. */
+    const COALESCE = 90;       // floor; raised on a slow link (see `latency`)
+    let imgTimer = 0;
+    let lastImgAt = -COALESCE;
+    let pendingImg = -1;
+    let lastRequest = -1;
+    let latency = COALESCE;    // running estimate of one slice, ms
 
-      const img = slices[next];
-      if (!img.hasAttribute('src')) img.src = imageUrl(serie, files[next]);
+    const interval = () => Math.min(500, Math.max(COALESCE, latency * 1.3));
 
-      // A fast drag asks for dozens of slices in a row. Drop the requests that
-      // are now out of the window, otherwise the slice we stopped on waits
-      // behind every intermediate one (40 queued slices on a slow link).
-      for (let i = 0; i < slices.length; i++) {
-        if (i === next || i === shown || Math.abs(i - next) <= PRELOAD) continue;
-        const other = slices[i];
+    const askedAt = new Map();   // index -> when its request was issued
+    let busy = -1;               // slice whose image is on its way
+    let busyAt = 0;
+
+    function requestSlice(i) {
+      lastRequest = i;
+      const now = (window.performance || Date).now();
+      // One visible request at a time: issuing a new one on every step
+      // cancelled the previous before it arrived, and nothing was ever painted.
+      // A big jump (the reader threw the scrubber across the stack) overrides it.
+      if (busy >= 0 && now - busyAt < 1200 && Math.abs(i - busy) < 24) return;
+      busy = i;
+      busyAt = now;
+      const asked = now;
+      const img = slices[i];
+      if (!img.hasAttribute('src')) img.src = imageUrl(serie, files[i]);
+      askedAt.set(i, now);
+
+      // Drop the requests that are now out of the window, otherwise the slice
+      // we stopped on waits behind every intermediate one. Anything asked less
+      // than GRACE ms ago is left alone: on a slow link it needs that time to
+      // arrive, and cancelling it on every step is what froze the frame.
+      const GRACE = 400;
+      for (let k = 0; k < slices.length; k++) {
+        if (k === i || k === shown || k === busy || Math.abs(k - i) <= PRELOAD) continue;
+        if (now - (askedAt.get(k) || 0) < GRACE) continue;
+        const other = slices[k];
         if (other.hasAttribute('src') && !other.complete) other.removeAttribute('src');
       }
 
       if (img.complete && img.naturalWidth > 0) {
-        paintSlice(next);
+        if (busy === i) busy = -1;
+        paintSlice(i);
         reveal();
-      } else if (img.decode) {
-        // a newer request supersedes this one: test `current` again on resolve
-        const ready = () => { if (current === next) { paintSlice(next); reveal(); } };
-        img.decode().then(ready, ready);
-      } else {
-        paintSlice(next);
-        reveal();
+        return;
       }
+      // `load` rather than decode(): decode() resolved ~190 ms later even on a
+      // local server, which inflated the coalescing window and left the frame
+      // trailing the cursor. The browser paints the slice as soon as it has it.
+      const ready = () => {
+        if (busy === i) busy = -1;
+        const took = (window.performance || Date).now() - asked;
+        latency = latency * 0.7 + took * 0.3;     // follow the link
+        if (lastRequest === i) { paintSlice(i); reveal(); }
+        // the cursor moved on while this one was loading: go after it, so the
+        // frame ends on the slice the reader stopped at, even on a slow link
+        if (current !== i && current !== lastRequest) requestSlice(current);
+      };
+      img.addEventListener('load', ready, { once: true });
+      img.addEventListener('error', ready, { once: true });
+    }
+
+    function show(i) {
+      const next = Math.min(maxIndex, Math.max(0, i));
+      current = next;
+      prefetch.hold(250);
       paint();
+
+      const now = (window.performance || Date).now();
+      const gap = interval();
+      if (Math.abs(next - shown) > 2 && now - lastImgAt < gap) {
+        pendingImg = next;
+        if (!imgTimer) {
+          imgTimer = setTimeout(() => {
+            imgTimer = 0;
+            const v = pendingImg;
+            pendingImg = -1;
+            // no `v === current` test: during a continuous drag the cursor has
+            // always moved on by the time the timer fires, and nothing was ever
+            // requested — that is what left the frame frozen
+            if (v >= 0) {
+              lastImgAt = (window.performance || Date).now();
+              requestSlice(v);
+            }
+          }, gap - (now - lastImgAt));
+        }
+        return;
+      }
+      lastImgAt = now;
+      requestSlice(next);
     }
 
     /* scrubber thumb height */
