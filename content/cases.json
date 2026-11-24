@@ -1,11 +1,11 @@
 {
-  "version": "0.7.0",
+  "version": "0.7.1",
   "weeks": [
     {
       "week": 1,
       "dates": "1–7 December",
-      "open": true,
-      "opensOn": "",
+      "open": false,
+      "opensOn": "1 December",
       "cases": [
         {
           "id": "thorax-w1",
@@ -15,7 +15,7 @@
           "exam": "CT chest, with contrast",
           "theme": "thorax",
           "themeLabel": "Thorax",
-          "open": true,
+          "open": false,
           "opensOn": "1 December",
           "href": "cases/thorax-w1/",
           "thumb": "images/thorax-w1/lung/241.jpg",
@@ -30,7 +30,7 @@
           "exam": "Cardiac CT angiography",
           "theme": "cardio",
           "themeLabel": "Cardiovascular",
-          "open": true,
+          "open": false,
           "opensOn": "1 December",
           "href": "cases/cardio-w1/",
           "thumb": "images/cardio-w1/axial/112.jpg",
@@ -56,9 +56,9 @@
           "open": false,
           "opensOn": "8 December",
           "href": "cases/thorax-w2/",
-          "thumb": "",
+          "thumb": "images/thorax-w2/axial/004.jpg",
           "seriesCount": 2,
-          "sliceCount": 0
+          "sliceCount": 16
         },
         {
           "id": "cardio-w2",
@@ -71,9 +71,9 @@
           "open": false,
           "opensOn": "8 December",
           "href": "cases/cardio-w2/",
-          "thumb": "",
+          "thumb": "images/cardio-w2/axial/004.jpg",
           "seriesCount": 2,
-          "sliceCount": 0
+          "sliceCount": 16
         }
       ]
     },
@@ -94,9 +94,9 @@
           "open": false,
           "opensOn": "15 December",
           "href": "cases/thorax-w3/",
-          "thumb": "",
+          "thumb": "images/thorax-w3/axial/004.jpg",
           "seriesCount": 2,
-          "sliceCount": 0
+          "sliceCount": 16
         },
         {
           "id": "cardio-w3",
@@ -109,9 +109,9 @@
           "open": false,
           "opensOn": "15 December",
           "href": "cases/cardio-w3/",
-          "thumb": "",
+          "thumb": "images/cardio-w3/axial/004.jpg",
           "seriesCount": 2,
-          "sliceCount": 0
+          "sliceCount": 16
         }
       ]
     },
@@ -132,9 +132,9 @@
           "open": false,
           "opensOn": "22 December",
           "href": "cases/thorax-w4/",
-          "thumb": "",
+          "thumb": "images/thorax-w4/axial/004.jpg",
           "seriesCount": 2,
-          "sliceCount": 0
+          "sliceCount": 16
         },
         {
           "id": "cardio-w4",
@@ -147,9 +147,9 @@
           "open": false,
           "opensOn": "22 December",
           "href": "cases/cardio-w4/",
-          "thumb": "",
+          "thumb": "images/cardio-w4/axial/004.jpg",
           "seriesCount": 2,
-          "sliceCount": 0
+          "sliceCount": 16
         }
       ]
     }

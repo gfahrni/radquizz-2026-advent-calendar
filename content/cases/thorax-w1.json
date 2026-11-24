@@ -2,7 +2,7 @@
   "id": "thorax-w1",
   "week": 1,
   "theme": "thorax",
-  "open": true,
+  "open": false,
   "opensOn": "1 December",
   "title": "Case 1",
   "exam": "CT chest, with contrast",
@@ -12,13 +12,13 @@
     {
       "id": "lung",
       "tab": "Lung",
-      "note": "Axial slices · 1.25 mm · lung window",
+      "note": "Axial slices \u00b7 1.25 mm \u00b7 lung window",
       "folder": "images/thorax-w1/lung"
     },
     {
       "id": "mediastinal",
       "tab": "Mediastinal",
-      "note": "Axial slices · 1.25 mm · mediastinal window",
+      "note": "Axial slices \u00b7 1.25 mm \u00b7 mediastinal window",
       "folder": "images/thorax-w1/mediastinal"
     }
   ]

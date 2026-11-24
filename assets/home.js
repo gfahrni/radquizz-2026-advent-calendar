@@ -8,6 +8,12 @@
   const { initTheme, store } = window.RQ;
   const $ = (sel, root = document) => root.querySelector(sel);
 
+  /* ?preview=1 opens every window for the author, whatever "open" says in the
+     JSON. Nothing is secret (the repository is public); this is only there to
+     look at the whole calendar without spoiling it for the visitors. */
+  const PREVIEW = new URLSearchParams(location.search).has('preview');
+  const isOpen = (item) => Boolean(item.open) || PREVIEW;
+
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
   ));
@@ -23,7 +29,7 @@
   function openDoor(item) {
     const a = document.createElement('a');
     a.className = 'case-card';
-    a.href = item.href;
+    a.href = item.href + (PREVIEW ? '?preview=1' : '');
     a.dataset.id = item.id;
     a.innerHTML = `
       <div class="thumb">
@@ -57,7 +63,7 @@
     return el;
   }
 
-  const door = (item) => (item.open ? openDoor(item) : closedDoor(item));
+  const door = (item) => (isOpen(item) ? openDoor(item) : closedDoor(item));
 
   /* ---------------- Weeks ---------------- */
 
@@ -66,7 +72,7 @@
     section.className = 'week';
     section.dataset.week = String(week.week);
 
-    const state = week.open
+    const state = isOpen(week)
       ? '<span class="week-state is-open">Open now</span>'
       : `<span class="week-state">Opens ${esc(week.opensOn)}</span>`;
 
@@ -105,6 +111,11 @@
       }
 
       grid.replaceChildren(...weeks.map(weekBlock));
+
+      if (PREVIEW) {
+        const brand = $('.brand');
+        if (brand) brand.href = './?preview=1';
+      }
 
       // small comfort: highlight the last case opened
       const last = store.get('lastCase', null);

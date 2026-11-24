@@ -13,6 +13,9 @@
   const CASE_ID = document.body.dataset.case || '';
   const VERSION = document.body.dataset.version || '';
 
+  /* ?preview=1 unwraps a case for the author. See assets/home.js. */
+  const PREVIEW = new URLSearchParams(location.search).has('preview');
+
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
@@ -690,7 +693,11 @@
       store.set('lastCase', CASE_ID);
 
       // A case can stay wrapped: the page still exists, but shows the closed window.
-      if (data.open === false) { renderLocked(data); return; }
+      if (data.open === false && !PREVIEW) { renderLocked(data); return; }
+      if (PREVIEW) {
+        const brand = $('.brand');
+        if (brand) brand.href = BASE + '?preview=1';
+      }
 
       if (!Array.isArray(data.series) || !data.series.length) {
         throw new Error('This case declares no series.');

@@ -2,7 +2,7 @@
   "id": "cardio-w1",
   "week": 1,
   "theme": "cardio",
-  "open": true,
+  "open": false,
   "opensOn": "1 December",
   "title": "Case 2",
   "exam": "Cardiac CT angiography",

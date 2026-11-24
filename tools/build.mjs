@@ -200,13 +200,16 @@ async function main() {
     let totalBytes = 0;
     let thumb = null;
 
-    if (data.open) {
-      ({ total, totalBytes, thumb } = await buildManifests(data, warnings));
-      grandTotal += totalBytes;
-    }
+    // Manifests are built for every case, locked or not: the preview page
+    // (?preview=1) opens the wrapped windows and needs the slice lists.
+    // The Open Graph image stays generic while a window is wrapped, so a
+    // shared link never spoils its content.
+    ({ total, totalBytes, thumb } = await buildManifests(data, warnings));
+    grandTotal += totalBytes;
 
-    const ogImage = thumb
-      ? (homepage ? new URL(thumb, homepage).href : thumb)
+    const spoiler = data.open ? thumb : null;
+    const ogImage = spoiler
+      ? (homepage ? new URL(spoiler, homepage).href : spoiler)
       : (homepage ? new URL('assets/og-image.png', homepage).href : 'assets/og-image.png');
 
     // a locked window must not spoil what is inside
