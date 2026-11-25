@@ -1,5 +1,5 @@
 {
-  "version": "0.8.5",
+  "version": "0.8.6",
   "weeks": [
     {
       "week": 1,
@@ -95,8 +95,8 @@
           "opensOn": "15 December",
           "href": "cases/thorax-w3/",
           "thumb": "images/thorax-w3/lung/ctlungwindow244.jpg",
-          "seriesCount": 2,
-          "sliceCount": 974
+          "seriesCount": 1,
+          "sliceCount": 487
         },
         {
           "id": "cardio-w3",

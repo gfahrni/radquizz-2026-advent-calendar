@@ -14,12 +14,6 @@
       "tab": "Lung",
       "note": "Axial slices · lung window",
       "folder": "images/thorax-w3/lung"
-    },
-    {
-      "id": "minip",
-      "tab": "MiniIP",
-      "note": "Axial slices · minIP",
-      "folder": "images/thorax-w3/minip"
     }
   ]
 }
