@@ -5,8 +5,9 @@
 
 A static radiology advent calendar. **Eight cases over four weeks**, two per week —
 one chest, one cardiovascular. Each case is its own page with a shareable link; the
-tabs on that page are the **series** of the case (axial mediastinal, coronal lung, …).
-Scroll through the slices, then give your diagnosis at the bottom. The answer goes to a
+orange **Select series** ribbon above the viewer lists the **series** of the case
+(axial mediastinal, coronal lung, …), and each series is a stack of slices to scroll
+through. Then give your diagnosis at the bottom. The answer goes to a
 Google Sheet through an embedded Google Form.
 
 Windows of future weeks stay **wrapped**: they show a number and the date they open.

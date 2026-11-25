@@ -19,9 +19,9 @@
 
 <meta name="theme-color" content="#0f1d16" id="meta-theme-color">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230f1d16'/%3E%3Cg stroke='%23e8c37a' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='2.2' fill='%23c8102e'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="../../assets/style.css?v=0.8.7">
+<link rel="stylesheet" href="../../assets/style.css?v=0.8.8">
 </head>
-<body data-case="cardio-w3" data-base="../../" data-version="0.8.7">
+<body data-case="cardio-w3" data-base="../../" data-version="0.8.8">
 
 <a class="skip-link" href="#answer">Skip to the answer</a>
 
@@ -58,7 +58,17 @@
     <p class="case-meta" id="case-meta"></p>
   </header>
 
-  <nav class="tabs" id="tabs" role="tablist" aria-label="Series of this case" hidden></nav>
+  <div class="series-pick" id="series-pick" hidden>
+    <p class="series-pick-head">
+      <svg class="series-pick-icon" viewBox="0 0 16 16" aria-hidden="true" fill="none"
+           stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1.8 5.6h10.4M9.6 3.2l2.6 2.4-2.6 2.4M14.2 10.4H3.8M6.4 8l-2.6 2.4L6.4 12.8"/>
+      </svg>
+      <span class="series-pick-title">Select series</span>
+      <span class="series-pick-count" id="series-count"></span>
+    </p>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Series of this case"></nav>
+  </div>
 
   <div id="stage">
     <div class="skeleton" aria-hidden="true">
@@ -95,7 +105,7 @@
   <noscript><p class="warn">This quiz needs JavaScript to show the series.</p></noscript>
 </footer>
 
-<script src="../../assets/theme.js?v=0.8.7" defer></script>
-<script src="../../assets/app.js?v=0.8.7" defer></script>
+<script src="../../assets/theme.js?v=0.8.8" defer></script>
+<script src="../../assets/app.js?v=0.8.8" defer></script>
 </body>
 </html>

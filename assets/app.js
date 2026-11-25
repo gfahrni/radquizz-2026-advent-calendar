@@ -368,6 +368,13 @@
     ].filter(Boolean);
     $('#case-meta').textContent = parts.join('  ·  ');
 
+    const count = $('#series-count');
+    if (count) {
+      count.textContent = data.series.length > 1
+        ? `${data.series.length} series · ${total} ${total === 1 ? 'slice' : 'slices'}`
+        : '';
+    }
+
     const tag = $('#answer-tag');
     if (tag) tag.textContent = data.formLabel || data.title;
   }
@@ -376,8 +383,14 @@
 
   function renderTabs(data) {
     const nav = $('#tabs');
-    if (data.series.length < 2) { nav.hidden = true; return; }
+    const bar = $('#series-pick');
+    if (data.series.length < 2) {
+      nav.hidden = true;
+      if (bar) bar.hidden = true;
+      return;
+    }
     nav.hidden = false;
+    if (bar) bar.hidden = false;
     nav.replaceChildren();
 
     data.series.forEach((serie, i) => {
@@ -544,7 +557,9 @@
     if (meta) {
       const note = serie.note || '';
       // a one-image series (a single radiograph) has nothing to skip
-      const skipNote = SKIP > 1 && total > 1 ? `1 slice out of ${SKIP}` : '';
+      const skipNote = SKIP > 1 && total > 1
+        ? (SKIP === 2 ? 'every other slice' : `every ${SKIP}th slice`)
+        : '';
       meta.textContent = [note, skipNote].filter(Boolean).join(' · ');
       meta.hidden = !meta.textContent;
     }
@@ -928,6 +943,7 @@
     $('#case-meta').textContent = '';
 
     if ($('#tabs')) $('#tabs').hidden = true;
+    if ($('#series-pick')) $('#series-pick').hidden = true;
     for (const sel of ['.hint', '#cta', '#answer', '#serie-meta']) {
       const el = $(sel);
       if (el) el.remove();
@@ -962,9 +978,10 @@
       return;
     }
     const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    const what = total > 1 ? `the ${total} slices` : 'the slices';
     el.textContent = coarse
-      ? 'Drag up or down to go through the slices'
-      : 'Mouse wheel, drag or ↑ ↓ arrows to go through the slices';
+      ? `Drag up or down to go through ${what}`
+      : `Mouse wheel, drag or ↑ ↓ arrows to go through ${what}`;
   }
 
   /* ---------------- Boot ---------------- */

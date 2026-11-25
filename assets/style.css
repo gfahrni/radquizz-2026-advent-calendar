@@ -205,48 +205,86 @@ a { color: var(--accent); }
   border-radius: 1px;
 }
 
-/* Series tabs — just above the viewer */
+/* Series picker — an orange ribbon just above the viewer. It only shows on
+   cases with several series: it says out loud that the series can be changed
+   and how many slices there are, instead of leaving a row of quiet pills. */
+.series-pick {
+  margin: 0 0 10px;
+  padding: 9px 12px 11px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #eaa24a 0%, #dc8a2c 100%);
+  border: 1px solid rgba(0, 0, 0, .2);
+  color: #24160a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 12px 24px -18px rgba(0, 0, 0, .95);
+}
+.series-pick[hidden] { display: none; }
+
+.series-pick-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.series-pick-icon { width: 15px; height: 15px; flex: none; opacity: .9; }
+.series-pick-count {
+  margin-left: auto;
+  font-size: .7rem;
+  font-weight: 650;
+  letter-spacing: .03em;
+  text-transform: none;
+  color: rgba(36, 22, 10, .74);
+  font-variant-numeric: tabular-nums;
+}
+
 .tabs {
   display: flex;
   gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  margin: 0 0 8px;
-  padding: 2px 0 4px;
+  margin: 0;
+  padding: 0;
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tabs[hidden] { display: none; }
+
+.series-pick .tabs { margin-top: 8px; }
 
 .tab {
   appearance: none;
   flex: none;
   font: inherit;
-  font-size: .87rem;
-  font-weight: 550;
-  color: var(--ink-2);
-  background: transparent;
-  border: 1px solid transparent;
+  font-size: .85rem;
+  font-weight: 600;
+  color: #2b1a09;
+  background: rgba(255, 255, 255, .3);
+  border: 1px solid rgba(43, 26, 9, .18);
   border-radius: 999px;
-  padding: 7px 14px;
+  padding: 6px 13px;
   cursor: pointer;
   white-space: nowrap;
   transition: background .16s, color .16s, border-color .16s;
 }
-.tab:hover { background: var(--surface-2); color: var(--ink); }
+.tab:hover { background: rgba(255, 255, 255, .46); color: #1d1104; }
+.tab:focus-visible { outline: 2px solid #10251a; outline-offset: 2px; }
 .tab[aria-selected="true"] {
-  background: var(--surface);
-  border-color: var(--line);
-  color: var(--ink);
-  box-shadow: var(--shadow-1);
+  background: #10251a;
+  border-color: #10251a;
+  color: #f7ecd8;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, .35);
 }
 .tab .tab-index {
   font-variant-numeric: tabular-nums;
-  color: var(--ink-3);
-  font-size: .78rem;
+  color: rgba(43, 26, 9, .55);
+  font-size: .74rem;
   margin-right: 6px;
 }
-.tab[aria-selected="true"] .tab-index { color: var(--accent); }
+.tab[aria-selected="true"] .tab-index { color: var(--gold); }
 
 /* ---------- 5. Content ---------- */
 .wrap {
@@ -574,7 +612,7 @@ a { color: var(--accent); }
 }
 
 @media print {
-  .chrome, .cta, .hint, .viewer { display: none !important; }
+  .chrome, .cta, .hint, .viewer, .series-pick { display: none !important; }
   body { background: #fff; }
 }
 

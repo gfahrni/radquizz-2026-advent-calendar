@@ -58,7 +58,17 @@
     <p class="case-meta" id="case-meta"></p>
   </header>
 
-  <nav class="tabs" id="tabs" role="tablist" aria-label="Series of this case" hidden></nav>
+  <div class="series-pick" id="series-pick" hidden>
+    <p class="series-pick-head">
+      <svg class="series-pick-icon" viewBox="0 0 16 16" aria-hidden="true" fill="none"
+           stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1.8 5.6h10.4M9.6 3.2l2.6 2.4-2.6 2.4M14.2 10.4H3.8M6.4 8l-2.6 2.4L6.4 12.8"/>
+      </svg>
+      <span class="series-pick-title">Select series</span>
+      <span class="series-pick-count" id="series-count"></span>
+    </p>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Series of this case"></nav>
+  </div>
 
   <div id="stage">
     <div class="skeleton" aria-hidden="true">
