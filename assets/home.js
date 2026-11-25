@@ -49,7 +49,7 @@
         <p class="case-stem">${esc(item.stem || '')}</p>
         <p class="case-foot">
           <span>${item.seriesCount} series</span>
-          <span>${item.sliceCount} slices</span>
+          <span>${item.sliceCount} ${item.sliceCount === 1 ? 'slice' : 'slices'}</span>
         </p>
       </div>`;
     return a;

@@ -5,21 +5,15 @@
   "open": false,
   "opensOn": "22 December",
   "title": "Chest pain, coronary angiography: unremarkable",
-  "exam": "Coronary CT angiography",
+  "exam": "Cardiac MR",
   "stem": "",
   "formLabel": "Case 8 — Chest pain, coronary angiography: unremarkable",
   "series": [
     {
-      "id": "axial",
-      "tab": "Axial",
-      "note": "Axial slices · 0.6 mm",
-      "folder": "images/cardio-w4/axial"
-    },
-    {
-      "id": "coronal",
-      "tab": "Coronal",
-      "note": "Coronal reconstruction",
-      "folder": "images/cardio-w4/coronal"
+      "id": "cine",
+      "tab": "Cine",
+      "note": "Short-axis cine",
+      "folder": "images/cardio-w4/cine"
     }
   ]
 }

@@ -5,21 +5,15 @@
   "open": false,
   "opensOn": "8 December",
   "title": "Suspected autoimmune disease; evaluation for interstitial lung disease",
-  "exam": "Cardiac CT",
+  "exam": "CT chest, mediastinal window",
   "stem": "",
   "formLabel": "Case 4 — Suspected autoimmune disease; evaluation for interstitial lung disease",
   "series": [
     {
       "id": "axial",
       "tab": "Axial",
-      "note": "Axial slices · 0.6 mm",
+      "note": "Axial slices · mediastinal window",
       "folder": "images/cardio-w2/axial"
-    },
-    {
-      "id": "coronal",
-      "tab": "Coronal",
-      "note": "Coronal reconstruction",
-      "folder": "images/cardio-w2/coronal"
     }
   ]
 }

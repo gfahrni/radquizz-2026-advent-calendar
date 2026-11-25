@@ -1,5 +1,5 @@
 {
-  "version": "0.7.18",
+  "version": "0.8.2",
   "weeks": [
     {
       "week": 1,
@@ -50,30 +50,30 @@
           "number": 3,
           "title": "Staging in a patient with gastric cancer",
           "stem": "",
-          "exam": "CT chest, with contrast",
+          "exam": "CT chest, lung window",
           "theme": "thorax",
           "themeLabel": "Thorax",
           "open": false,
           "opensOn": "8 December",
           "href": "cases/thorax-w2/",
-          "thumb": "images/thorax-w2/axial/004.jpg",
-          "seriesCount": 2,
-          "sliceCount": 16
+          "thumb": "images/thorax-w2/lung/ctlungwindow265.jpg",
+          "seriesCount": 1,
+          "sliceCount": 529
         },
         {
           "id": "cardio-w2",
           "number": 4,
           "title": "Suspected autoimmune disease; evaluation for interstitial lung disease",
           "stem": "",
-          "exam": "Cardiac CT",
+          "exam": "CT chest, mediastinal window",
           "theme": "cardio",
           "themeLabel": "Cardiovascular",
           "open": false,
           "opensOn": "8 December",
           "href": "cases/cardio-w2/",
-          "thumb": "images/cardio-w2/axial/004.jpg",
-          "seriesCount": 2,
-          "sliceCount": 16
+          "thumb": "images/cardio-w2/axial/ct-med282.jpg",
+          "seriesCount": 1,
+          "sliceCount": 564
         }
       ]
     },
@@ -88,30 +88,30 @@
           "number": 5,
           "title": "Cough in a painter with familial history of pulmonary fibrosis, ANA 1/160, serum precipitins: molds+",
           "stem": "",
-          "exam": "CT chest, with contrast",
+          "exam": "CT chest, high resolution",
           "theme": "thorax",
           "themeLabel": "Thorax",
           "open": false,
           "opensOn": "15 December",
           "href": "cases/thorax-w3/",
-          "thumb": "images/thorax-w3/axial/004.jpg",
+          "thumb": "images/thorax-w3/lung/ctlungwindow244.jpg",
           "seriesCount": 2,
-          "sliceCount": 16
+          "sliceCount": 974
         },
         {
           "id": "cardio-w3",
           "number": 6,
           "title": "Follow-up in a lung cancer patient",
           "stem": "",
-          "exam": "CT pulmonary angiography",
+          "exam": "Cardiac CT angiography · PET-CT",
           "theme": "cardio",
           "themeLabel": "Cardiovascular",
           "open": false,
           "opensOn": "15 December",
           "href": "cases/cardio-w3/",
-          "thumb": "images/cardio-w3/axial/004.jpg",
-          "seriesCount": 2,
-          "sliceCount": 16
+          "thumb": "images/cardio-w3/arterial/CTA-Arterial128.jpg",
+          "seriesCount": 3,
+          "sliceCount": 548
         }
       ]
     },
@@ -126,29 +126,29 @@
           "number": 7,
           "title": "Chest pain, coronary angiography: unremarkable",
           "stem": "",
-          "exam": "Low-dose CT chest",
+          "exam": "Chest X-ray, PA",
           "theme": "thorax",
           "themeLabel": "Thorax",
           "open": false,
           "opensOn": "22 December",
           "href": "cases/thorax-w4/",
-          "thumb": "images/thorax-w4/axial/004.jpg",
-          "seriesCount": 2,
-          "sliceCount": 16
+          "thumb": "images/thorax-w4/xray/ChextRX-PA.jpg",
+          "seriesCount": 1,
+          "sliceCount": 1
         },
         {
           "id": "cardio-w4",
           "number": 8,
           "title": "Chest pain, coronary angiography: unremarkable",
           "stem": "",
-          "exam": "Coronary CT angiography",
+          "exam": "Cardiac MR",
           "theme": "cardio",
           "themeLabel": "Cardiovascular",
           "open": false,
           "opensOn": "22 December",
           "href": "cases/cardio-w4/",
-          "thumb": "images/cardio-w4/axial/004.jpg",
-          "seriesCount": 2,
+          "thumb": "images/cardio-w4/cine/CardiacMR10.jpg",
+          "seriesCount": 1,
           "sliceCount": 16
         }
       ]

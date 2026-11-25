@@ -5,21 +5,15 @@
   "open": false,
   "opensOn": "8 December",
   "title": "Staging in a patient with gastric cancer",
-  "exam": "CT chest, with contrast",
+  "exam": "CT chest, lung window",
   "stem": "",
   "formLabel": "Case 3 — Staging in a patient with gastric cancer",
   "series": [
     {
-      "id": "axial",
-      "tab": "Axial",
-      "note": "Axial slices · 0.6 mm",
-      "folder": "images/thorax-w2/axial"
-    },
-    {
-      "id": "coronal",
-      "tab": "Coronal",
-      "note": "Coronal reconstruction",
-      "folder": "images/thorax-w2/coronal"
+      "id": "lung",
+      "tab": "Lung",
+      "note": "Axial slices · lung window",
+      "folder": "images/thorax-w2/lung"
     }
   ]
 }

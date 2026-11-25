@@ -352,7 +352,7 @@
     const parts = [
       data.exam,
       `${data.series.length} series`,
-      `${total} slices`,
+      `${total} ${total === 1 ? 'slice' : 'slices'}`,
     ].filter(Boolean);
     $('#case-meta').textContent = parts.join('  ·  ');
 
@@ -424,6 +424,7 @@
     const stage = $('#stage');
     const files = decimate(state.manifests.get(serie.id) || []);
     const total = files.length;
+    setHint(total);
 
     const viewer = document.createElement('div');
     viewer.className = 'viewer';
@@ -529,7 +530,9 @@
     const meta = $('#serie-meta');
     if (meta) {
       const note = serie.note || '';
-      meta.textContent = note + (SKIP > 1 ? (note ? ' · ' : '') + `1 slice out of ${SKIP}` : '');
+      // a one-image series (a single radiograph) has nothing to skip
+      const skipNote = SKIP > 1 && total > 1 ? `1 slice out of ${SKIP}` : '';
+      meta.textContent = [note, skipNote].filter(Boolean).join(' · ');
       meta.hidden = !meta.textContent;
     }
 
@@ -938,9 +941,13 @@
 
   /* ---------------- Hint ----------------
      The gesture differs between a mouse and a finger; say the right one. */
-  function setHint() {
+  function setHint(total = 0) {
     const el = $('#hint-text');
     if (!el) return;
+    if (total === 1) {
+      el.textContent = 'A single image — there is no stack to scroll here';
+      return;
+    }
     const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
     el.textContent = coarse
       ? 'Drag up or down to go through the slices'

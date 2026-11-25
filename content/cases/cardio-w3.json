@@ -5,21 +5,27 @@
   "open": false,
   "opensOn": "15 December",
   "title": "Follow-up in a lung cancer patient",
-  "exam": "CT pulmonary angiography",
+  "exam": "Cardiac CT angiography · PET-CT",
   "stem": "",
   "formLabel": "Case 6 — Follow-up in a lung cancer patient",
   "series": [
     {
-      "id": "axial",
-      "tab": "Axial",
-      "note": "Axial slices · 0.6 mm",
-      "folder": "images/cardio-w3/axial"
+      "id": "arterial",
+      "tab": "Arterial",
+      "note": "Axial slices · arterial phase",
+      "folder": "images/cardio-w3/arterial"
     },
     {
-      "id": "coronal",
-      "tab": "Coronal",
-      "note": "Coronal reconstruction",
-      "folder": "images/cardio-w3/coronal"
+      "id": "venous",
+      "tab": "Venous",
+      "note": "Axial slices · venous phase",
+      "folder": "images/cardio-w3/venous"
+    },
+    {
+      "id": "pet",
+      "tab": "PET-CT",
+      "note": "Axial slices · PET-CT fusion",
+      "folder": "images/cardio-w3/pet"
     }
   ]
 }

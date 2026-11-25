@@ -5,21 +5,21 @@
   "open": false,
   "opensOn": "15 December",
   "title": "Cough in a painter with familial history of pulmonary fibrosis, ANA 1/160, serum precipitins: molds+",
-  "exam": "CT chest, with contrast",
+  "exam": "CT chest, high resolution",
   "stem": "",
   "formLabel": "Case 5 — Cough in a painter with familial history of pulmonary fibrosis, ANA 1/160, serum precipitins: molds+",
   "series": [
     {
-      "id": "axial",
-      "tab": "Axial",
-      "note": "Axial slices · 0.6 mm",
-      "folder": "images/thorax-w3/axial"
+      "id": "lung",
+      "tab": "Lung",
+      "note": "Axial slices · lung window",
+      "folder": "images/thorax-w3/lung"
     },
     {
-      "id": "coronal",
-      "tab": "Coronal",
-      "note": "Coronal reconstruction",
-      "folder": "images/thorax-w3/coronal"
+      "id": "minip",
+      "tab": "MiniIP",
+      "note": "Axial slices · minIP",
+      "folder": "images/thorax-w3/minip"
     }
   ]
 }
