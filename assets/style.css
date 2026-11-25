@@ -347,6 +347,17 @@ a { color: var(--accent); }
   max-width: 70ch;
 }
 
+/* Optional aside under the clinical information — e.g. why a case carries no
+   lung window. Read as a remark, not as part of the history. */
+.case-note {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: .87rem;
+  font-style: italic;
+  opacity: .92;
+  max-width: 70ch;
+}
+
 /* Visionneuse */
 .viewer {
   position: relative;

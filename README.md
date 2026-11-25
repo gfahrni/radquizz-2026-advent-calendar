@@ -68,6 +68,9 @@ One case = one JSON file + one image folder per series.
 - `open`: `true` once the window has been opened; `false` keeps it wrapped.
 - `opensOn`: the date shown on a wrapped window (e.g. `8 December`). Required when
   `open` is `false`.
+- `note`: optional short aside shown in italics just under the clinical text (`stem`) —
+  e.g. `"(the pertinent finding is extrapulmonary)"` to explain why a case carries a
+  mediastinal window only. Leave it out for the other cases.
 - `formLabel`: the value sent in the “Case” field of the form — your grouping key in the
   Sheet. Keep it stable.
 - `tab`: short text in the tab. `note`: technical line shown above the slices.

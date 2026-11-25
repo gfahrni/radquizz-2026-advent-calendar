@@ -360,6 +360,14 @@
     $('#case-title').textContent = data.title;
     $('#case-stem').textContent = data.stem || '';
 
+    // Optional aside under the clinical information — e.g. why a case has no
+    // lung window. Kept out of the head line so it can be read as a remark.
+    const noteEl = $('#case-note');
+    if (noteEl) {
+      noteEl.textContent = data.note || '';
+      noteEl.hidden = !data.note;
+    }
+
     const total = data.series.reduce((n, s) => n + (state.manifests.get(s.id) || []).length, 0);
     const parts = [
       data.exam,
