@@ -98,6 +98,9 @@ Every door opens, whatever `"open"` says, and the flag follows you when you clic
 through (`…/cases/thorax-w2/?secret-preview-mode=1`). The build writes the slice lists and
 the thumbnails for wrapped cases too, so the preview is complete.
 
+`?catherine-mode=1` is kept as an **alias** with exactly the same effect — a link written
+with either name keeps that name when you click through.
+
 It is an **unlisted** URL, not a private one: the repository is public, so the images
 and the JSON are readable by anyone. It only keeps the calendar from being spoiled for
 the visitors who get the normal link.

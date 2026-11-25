@@ -15,8 +15,11 @@
 
   const params = new URLSearchParams(location.search);
 
-  /* ?secret-preview-mode=1 unwraps a case for the author. See assets/home.js. */
-  const PREVIEW = params.has('secret-preview-mode');
+  /* ?secret-preview-mode=1 unwraps a case for the author; ?catherine-mode=1 is an
+     alias with the same effect. See assets/home.js. */
+  const PREVIEW_KEY = ['secret-preview-mode', 'catherine-mode']
+    .find((key) => params.has(key)) || null;
+  const PREVIEW = PREVIEW_KEY !== null;
 
   /* One slice out of two by default: 2.5 mm instead of 1.25 mm, half the weight
      and half the scrolling. ?skip=1 reads every slice, ?skip=4 one out of four.
@@ -979,7 +982,7 @@
       if (data.open === false && !PREVIEW) { renderLocked(data); return; }
       if (PREVIEW) {
         const brand = $('.brand');
-        if (brand) brand.href = BASE + '?secret-preview-mode=1';
+        if (brand) brand.href = BASE + `?${PREVIEW_KEY}=1`;
       }
 
       if (!Array.isArray(data.series) || !data.series.length) {
