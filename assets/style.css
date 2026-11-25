@@ -148,6 +148,7 @@ a { color: var(--accent); }
   display: inline-flex;
   align-items: center;
   gap: 9px;
+  white-space: nowrap;
   color: var(--ink);
   text-decoration: none;
   font-weight: 650;
@@ -168,6 +169,41 @@ a { color: var(--accent); }
   white-space: nowrap;
 }
 .chrome-note sup { font-size: .62em; letter-spacing: 0; }
+
+/* left side of the header: the society's logo, then the site's own brand */
+.chrome-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+/* The SCCTI logo is navy on white: it sits on a white plate so it stays
+   legible on the dark header (a knock-out version would not be the real logo). */
+.scct {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .5), 0 6px 14px -10px #000;
+  transition: box-shadow .16s var(--ease), transform .16s var(--ease);
+}
+.scct img { display: block; height: 29px; width: auto; }
+.scct:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .5), 0 8px 16px -10px #000,
+              0 0 0 2px var(--gold-soft);
+}
+
+.chrome-sep {
+  width: 1px;
+  height: 20px;
+  flex: none;
+  background: var(--line);
+  border-radius: 1px;
+}
 
 /* Series tabs — just above the viewer */
 .tabs {
@@ -245,6 +281,21 @@ a { color: var(--accent); }
   font-size: 1.02rem;
   text-wrap: pretty;
 }
+
+/* the society behind the calendar, under the intro */
+.credit {
+  margin-top: 16px;
+  font-size: .84rem;
+  color: var(--ink-3);
+  text-wrap: pretty;
+}
+.credit a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-soft);
+  padding-bottom: 1px;
+}
+.credit a:hover { color: var(--ink); border-bottom-color: var(--gold); }
 
 .case-head { margin: 0 0 14px; }
 .case-head h2 {
@@ -492,6 +543,9 @@ a { color: var(--accent); }
 /* ---------- 7. Responsive ---------- */
 @media (max-width: 720px) {
   .chrome-inner { height: 54px; padding: 0 14px; }
+  .chrome-left { gap: 10px; }
+  .scct { padding: 3px 7px; }
+  .scct img { height: 23px; }
   .chrome-note { font-size: .64rem; letter-spacing: .08em; }
   .wrap { padding: 22px 14px 70px; }
   .intro { text-align: left; margin-bottom: 18px; }
@@ -844,6 +898,25 @@ a { color: var(--accent); }
 
 @media (max-width: 560px) {
   .chrome-note-long { display: none; }
+}
+
+@media (max-width: 420px) {
+  .chrome-left { gap: 8px; }
+  .chrome-sep { display: none; }
+  .scct img { height: 19px; }
+  .brand-mark { width: 18px; height: 18px; }
+  .brand-text { font-size: .94rem; }
+}
+
+/* narrow phones (320–360 px): everything in the header has to shrink a bit */
+@media (max-width: 360px) {
+  .chrome-left { gap: 6px; }
+  .scct { padding: 2px 6px; }
+  .scct img { height: 17px; }
+  .brand { gap: 6px; }
+  .brand-mark { width: 16px; height: 16px; }
+  .brand-text { font-size: .88rem; }
+  .chrome-note { font-size: .58rem; letter-spacing: .05em; }
 }
 
 /* window number, as a badge on the thumbnail */

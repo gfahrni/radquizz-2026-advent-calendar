@@ -428,6 +428,7 @@ assets/app.js               case page: series, image stack, form
 assets/home.js              home: weeks, open doors, wrapped windows
 assets/neige/               the three snowflake SVGs (generated)
 assets/og-image.png         LinkedIn preview of the home page (1200×630)
+assets/sccti-logo.png       SCCTI logo, top-left of the home page header (640×184)
 
 content/cases/<case>.json   ← to edit: the cases
 content/cases.json          generated: weeks and doors for the home page
@@ -447,3 +448,9 @@ package.json                site version + scripts
 
 JavaScript with no dependencies and no build step: what you push to GitHub is exactly what
 is served.
+
+**The SCCTI credit** lives only on the home page: the society's logo at the top-left of the
+header (`.scct` in `index.html`, linked to <https://sscti.sgr-ssr.ch/>) and, under the
+intro, the line “Brought to you by the Swiss Society of Cardiothoracic Imaging (SCCTI)”
+(`.credit`). The logo is navy on white, so it sits on a small white plate to stay legible on
+the dark theme: to replace it, keep a white background and the 640 × 184 proportions.
