@@ -1,5 +1,5 @@
 {
-  "version": "0.7.15",
+  "version": "0.7.16",
   "weeks": [
     {
       "week": 1,
@@ -10,8 +10,8 @@
         {
           "id": "thorax-w1",
           "number": 1,
-          "title": "Case 1",
-          "stem": "X",
+          "title": "Chest pain in a 55-year-old patient",
+          "stem": "",
           "exam": "CT chest, with contrast",
           "theme": "thorax",
           "themeLabel": "Thorax",
@@ -25,8 +25,8 @@
         {
           "id": "cardio-w1",
           "number": 2,
-          "title": "Case 2",
-          "stem": "X",
+          "title": "Follow-up after endocarditis in a patient with bioprosthetic aortic valve",
+          "stem": "",
           "exam": "Cardiac CT angiography",
           "theme": "cardio",
           "themeLabel": "Cardiovascular",
@@ -48,8 +48,8 @@
         {
           "id": "thorax-w2",
           "number": 3,
-          "title": "Fever and productive cough",
-          "stem": "Woman, 41. High fever and productive cough for five days, right-sided pleuritic pain. CRP 180 mg/L, leucocytes 16 G/L.",
+          "title": "Staging in a patient with gastric cancer",
+          "stem": "",
           "exam": "CT chest, with contrast",
           "theme": "thorax",
           "themeLabel": "Thorax",
@@ -63,8 +63,8 @@
         {
           "id": "cardio-w2",
           "number": 4,
-          "title": "Exertional dyspnoea",
-          "stem": "Man, 67. Progressive exertional dyspnoea over three months. Systolic murmur at the base. History of hypertension.",
+          "title": "Suspected autoimmune disease; evaluation for interstitial lung disease",
+          "stem": "",
           "exam": "Cardiac CT",
           "theme": "cardio",
           "themeLabel": "Cardiovascular",
@@ -86,8 +86,8 @@
         {
           "id": "thorax-w3",
           "number": 5,
-          "title": "Haemoptysis",
-          "stem": "Man, 62. Two episodes of haemoptysis this week. Smoker, 40 pack-years. No fever, no weight loss.",
+          "title": "Cough in a painter with familial history of pulmonary fibrosis, ANA 1/160, serum precipitins: molds+",
+          "stem": "",
           "exam": "CT chest, with contrast",
           "theme": "thorax",
           "themeLabel": "Thorax",
@@ -101,8 +101,8 @@
         {
           "id": "cardio-w3",
           "number": 6,
-          "title": "Syncope on exertion",
-          "stem": "Woman, 49. Syncope while climbing stairs, no prodrome, no chest pain. Mild hypoxia at rest.",
+          "title": "Follow-up in a lung cancer patient",
+          "stem": "",
           "exam": "CT pulmonary angiography",
           "theme": "cardio",
           "themeLabel": "Cardiovascular",
@@ -124,8 +124,8 @@
         {
           "id": "thorax-w4",
           "number": 7,
-          "title": "Incidental pulmonary nodule",
-          "stem": "Woman, 59. 8 mm nodule in the right upper lobe found on a screening CT. Asymptomatic, non-smoker.",
+          "title": "Chest pain, coronary angiography: unremarkable",
+          "stem": "",
           "exam": "Low-dose CT chest",
           "theme": "thorax",
           "themeLabel": "Thorax",
@@ -139,8 +139,8 @@
         {
           "id": "cardio-w4",
           "number": 8,
-          "title": "Palpitations",
-          "stem": "Man, 45. Episodes of palpitations at rest for one month. Sinus rhythm on ECG, no chest pain.",
+          "title": "Chest pain, coronary angiography: unremarkable",
+          "stem": "",
           "exam": "Coronary CT angiography",
           "theme": "cardio",
           "themeLabel": "Cardiovascular",

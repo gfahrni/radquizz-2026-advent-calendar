@@ -4,10 +4,10 @@
   "theme": "cardio",
   "open": false,
   "opensOn": "8 December",
-  "title": "Exertional dyspnoea",
+  "title": "Suspected autoimmune disease; evaluation for interstitial lung disease",
   "exam": "Cardiac CT",
-  "stem": "Man, 67. Progressive exertional dyspnoea over three months. Systolic murmur at the base. History of hypertension.",
-  "formLabel": "Case 4 — Exertional dyspnoea",
+  "stem": "",
+  "formLabel": "Case 4 — Suspected autoimmune disease; evaluation for interstitial lung disease",
   "series": [
     {
       "id": "axial",

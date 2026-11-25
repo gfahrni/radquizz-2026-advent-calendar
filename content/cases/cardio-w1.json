@@ -4,10 +4,10 @@
   "theme": "cardio",
   "open": false,
   "opensOn": "1 December",
-  "title": "Case 2",
+  "title": "Follow-up after endocarditis in a patient with bioprosthetic aortic valve",
   "exam": "Cardiac CT angiography",
-  "stem": "X",
-  "formLabel": "Case 2",
+  "stem": "",
+  "formLabel": "Case 2 — Follow-up after endocarditis in a patient with bioprosthetic aortic valve",
   "series": [
     {
       "id": "axial",

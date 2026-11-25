@@ -4,10 +4,10 @@
   "theme": "cardio",
   "open": false,
   "opensOn": "22 December",
-  "title": "Palpitations",
+  "title": "Chest pain, coronary angiography: unremarkable",
   "exam": "Coronary CT angiography",
-  "stem": "Man, 45. Episodes of palpitations at rest for one month. Sinus rhythm on ECG, no chest pain.",
-  "formLabel": "Case 8 — Palpitations",
+  "stem": "",
+  "formLabel": "Case 8 — Chest pain, coronary angiography: unremarkable",
   "series": [
     {
       "id": "axial",

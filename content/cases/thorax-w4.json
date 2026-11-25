@@ -4,10 +4,10 @@
   "theme": "thorax",
   "open": false,
   "opensOn": "22 December",
-  "title": "Incidental pulmonary nodule",
+  "title": "Chest pain, coronary angiography: unremarkable",
   "exam": "Low-dose CT chest",
-  "stem": "Woman, 59. 8 mm nodule in the right upper lobe found on a screening CT. Asymptomatic, non-smoker.",
-  "formLabel": "Case 7 — Incidental pulmonary nodule",
+  "stem": "",
+  "formLabel": "Case 7 — Chest pain, coronary angiography: unremarkable",
   "series": [
     {
       "id": "axial",

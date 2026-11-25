@@ -4,10 +4,10 @@
   "theme": "cardio",
   "open": false,
   "opensOn": "15 December",
-  "title": "Syncope on exertion",
+  "title": "Follow-up in a lung cancer patient",
   "exam": "CT pulmonary angiography",
-  "stem": "Woman, 49. Syncope while climbing stairs, no prodrome, no chest pain. Mild hypoxia at rest.",
-  "formLabel": "Case 6 — Syncope on exertion",
+  "stem": "",
+  "formLabel": "Case 6 — Follow-up in a lung cancer patient",
   "series": [
     {
       "id": "axial",

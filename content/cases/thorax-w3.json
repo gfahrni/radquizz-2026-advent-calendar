@@ -4,10 +4,10 @@
   "theme": "thorax",
   "open": false,
   "opensOn": "15 December",
-  "title": "Haemoptysis",
+  "title": "Cough in a painter with familial history of pulmonary fibrosis, ANA 1/160, serum precipitins: molds+",
   "exam": "CT chest, with contrast",
-  "stem": "Man, 62. Two episodes of haemoptysis this week. Smoker, 40 pack-years. No fever, no weight loss.",
-  "formLabel": "Case 5 — Haemoptysis",
+  "stem": "",
+  "formLabel": "Case 5 — Cough in a painter with familial history of pulmonary fibrosis, ANA 1/160, serum precipitins: molds+",
   "series": [
     {
       "id": "axial",

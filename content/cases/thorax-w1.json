@@ -4,10 +4,10 @@
   "theme": "thorax",
   "open": false,
   "opensOn": "1 December",
-  "title": "Case 1",
+  "title": "Chest pain in a 55-year-old patient",
   "exam": "CT chest, with contrast",
-  "stem": "X",
-  "formLabel": "Case 1",
+  "stem": "",
+  "formLabel": "Case 1 — Chest pain in a 55-year-old patient",
   "series": [
     {
       "id": "lung",
