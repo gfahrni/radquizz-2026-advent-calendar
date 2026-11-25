@@ -163,18 +163,30 @@
   })();
 
   /* ---------------- Loading status ----------------
-     Small line in the top-left corner: "loading 12/241 slices", the count of
-     the series on screen. It fades out when everything is cached.
+     Small line in the top-left corner of the image frame, not of the page:
+     "loading 12/241 slices", the count of the series on screen. It fades out
+     when everything is cached. The frame (#stage) is rebuilt on every series
+     switch, so the line is mounted back into it each time.
      ------------------------------------------------- */
+  let loadStatusEl = null;
+
+  function placeLoadStatus() {
+    const stage = document.getElementById('stage');
+    if (!loadStatusEl || !stage) return;
+    if (loadStatusEl.parentElement !== stage) stage.append(loadStatusEl);
+  }
+
   function initLoadStatus() {
     const el = document.createElement('p');
     el.className = 'load-status';
     el.setAttribute('aria-hidden', 'true');
-    document.body.append(el);
+    loadStatusEl = el;
+    placeLoadStatus();
 
     let hide = 0;
     prefetch.onProgress((done, total) => {
       if (!total) return;
+      placeLoadStatus();
       el.textContent = `loading ${done}/${total} slices`;
       clearTimeout(hide);
       if (done >= total) {
@@ -489,6 +501,7 @@
     if (total) viewer.append(hud);
 
     stage.replaceChildren(viewer);
+    placeLoadStatus();          // the status lives inside the image frame
 
     // the viewer appears once the first slice is ready: no black rectangle
     if (total) {
