@@ -4,10 +4,10 @@
   "theme": "cardio",
   "open": false,
   "opensOn": "15 December",
-  "title": "Follow-up in a lung cancer patient",
+  "title": "Chest pain in a 63-year-old man",
   "exam": "Cardiac CT angiography · PET-CT",
   "stem": "",
-  "formLabel": "Case 6 — Follow-up in a lung cancer patient",
+  "formLabel": "Case 6 — Chest pain in a 63-year-old man",
   "series": [
     {
       "id": "arterial",

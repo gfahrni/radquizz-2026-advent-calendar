@@ -1,5 +1,5 @@
 {
-  "version": "0.8.6",
+  "version": "0.8.7",
   "weeks": [
     {
       "week": 1,
@@ -101,7 +101,7 @@
         {
           "id": "cardio-w3",
           "number": 6,
-          "title": "Follow-up in a lung cancer patient",
+          "title": "Chest pain in a 63-year-old man",
           "stem": "",
           "exam": "Cardiac CT angiography · PET-CT",
           "theme": "cardio",
