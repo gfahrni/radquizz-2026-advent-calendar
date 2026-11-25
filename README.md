@@ -88,14 +88,14 @@ published early, set `"open": false` (keep `opensOn`), then `npm run build`, com
 push. The door turns back into a numbered window and the case page shows “This window
 opens on …”; the images and the JSON stay in place.
 
-### Preview the whole calendar (`catherine-mode`)
+### Preview the whole calendar (`secret-preview-mode`)
 
 ```
-https://scct-advent-calendar-2026.runs-on.dev/?catherine-mode=1
+https://scct-advent-calendar-2026.runs-on.dev/?secret-preview-mode=1
 ```
 
 Every door opens, whatever `"open"` says, and the flag follows you when you click
-through (`…/cases/thorax-w2/?catherine-mode=1`). The build writes the slice lists and
+through (`…/cases/thorax-w2/?secret-preview-mode=1`). The build writes the slice lists and
 the thumbnails for wrapped cases too, so the preview is complete.
 
 It is an **unlisted** URL, not a private one: the repository is public, so the images
@@ -113,7 +113,7 @@ half the scrolling. `skip` overrides it, and only the kept slices are downloaded
 ```
 
 A reading option, not a build option: the images on disk stay complete, the technical line
-under the frame says “1 slice out of 2”, and it combines with `catherine-mode` on a wrapped
+under the frame says “1 slice out of 2”, and it combines with `secret-preview-mode` on a wrapped
 case. Coarse steps are fine to skim a stack, less so to look for a 3 mm nodule.
 
 ### Scroll speed

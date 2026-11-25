@@ -201,7 +201,7 @@ async function main() {
     let thumb = null;
 
     // Manifests are built for every case, locked or not: the hidden view
-    // (?catherine-mode=1) opens the wrapped windows and needs the slice lists.
+    // (?secret-preview-mode=1) opens the wrapped windows and needs the slice lists.
     // The Open Graph image stays generic while a window is wrapped, so a
     // shared link never spoils its content.
     ({ total, totalBytes, thumb } = await buildManifests(data, warnings));
