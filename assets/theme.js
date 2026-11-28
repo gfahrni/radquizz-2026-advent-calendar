@@ -25,6 +25,40 @@ window.RQ = (() => {
     },
   };
 
+  /* ---------------- Release codes ----------------
+     One three-letter code at the end of the URL, nothing else:
+
+       …/?wrt  week 1    …/?zhj  week 2    …/?upo  week 3    …/?cvn  week 4
+
+     A code opens its week and the ones before it, so a reader who arrives
+     on week 3 can still catch up on weeks 1 and 2. Without a code the whole
+     calendar stays wrapped — that is what a visitor of the home page sees.
+
+     The last code used is remembered: a reader who comes back without the
+     link keeps his access. Nothing here is a secret (the repository is
+     public); it only stops the calendar from being shown too early.
+     ------------------------------------------------- */
+
+  const CODES = { wrt: 1, zhj: 2, upo: 3, cvn: 4 };
+  const params = new URLSearchParams(location.search);
+  const fromUrl = Array.from(params.keys()).find((k) => Object.hasOwn(CODES, k)) || null;
+
+  if (fromUrl) {
+    store.set('week', CODES[fromUrl]);
+    store.set('code', fromUrl);
+  }
+
+  const week = fromUrl ? CODES[fromUrl] : Math.min(4, Math.max(0, Number(store.get('week', 0)) || 0));
+  const code = fromUrl || store.get('code', '') || '';
+
+  const release = {
+    week,                                  // 0 = nothing open
+    code,                                  // the three letters, '' if none
+    fromUrl: Boolean(fromUrl),
+    query: code && Object.hasOwn(CODES, code) ? '?' + code : '',
+    isOpen: (n) => n <= week,
+  };
+
   /* ---------------- Snowfall ----------------
      A full-screen canvas drawn with the SVG flakes from assets/neige/.
      Flakes fall, drift sideways and spin: a simple offset repeated
@@ -190,5 +224,5 @@ window.RQ = (() => {
     initSnow();
   }
 
-  return { THEME, store, initTheme };
+  return { THEME, store, initTheme, release };
 })();

@@ -5,8 +5,13 @@
 (() => {
   'use strict';
 
-  const { initTheme } = window.RQ;
+  const { initTheme, release } = window.RQ;
   const $ = (sel, root = document) => root.querySelector(sel);
+
+  /* ?wrt / ?zhj / ?upo / ?cvn: the release code of the post that brought the
+     reader here (see theme.js). It opens its week and the ones before it; the
+     home page scrolls straight to it. Without a code, nothing is open. */
+  const QUERY = release.query;
 
   /* ?secret-preview-mode=1 opens every window for the author, whatever "open" says
      in the JSON. ?catherine-mode=1 is kept as an alias, same effect: the links
@@ -17,7 +22,9 @@
     .find((key) => new URLSearchParams(location.search).has(key)) || null;
   const PREVIEW = PREVIEW_KEY !== null;
   const PREVIEW_QUERY = PREVIEW ? `?${PREVIEW_KEY}=1` : '';
-  const isOpen = (item) => Boolean(item.open) || PREVIEW;
+  const LINK_QUERY = PREVIEW ? PREVIEW_QUERY : QUERY;
+
+  const isOpen = (item, weekNo) => Boolean(item.open) || PREVIEW || release.isOpen(weekNo);
 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -34,7 +41,7 @@
   function openDoor(item) {
     const a = document.createElement('a');
     a.className = 'case-card';
-    a.href = item.href + PREVIEW_QUERY;
+    a.href = item.href + LINK_QUERY;
     a.dataset.id = item.id;
     a.innerHTML = `
       <div class="thumb">
@@ -68,7 +75,7 @@
     return el;
   }
 
-  const door = (item) => (isOpen(item) ? openDoor(item) : closedDoor(item));
+  const door = (item, weekNo) => (isOpen(item, weekNo) ? openDoor(item) : closedDoor(item));
 
   /* ---------------- Weeks ---------------- */
 
@@ -77,7 +84,7 @@
     section.className = 'week';
     section.dataset.week = String(week.week);
 
-    const state = isOpen(week)
+    const state = isOpen(week, week.week)
       ? '<span class="week-state is-open">Open now</span>'
       : `<span class="week-state">Opens ${esc(week.opensOn)}</span>`;
 
@@ -89,7 +96,7 @@
       </header>
       <div class="doors"></div>`;
 
-    $('.doors', section).append(...week.cases.map(door));
+    $('.doors', section).append(...week.cases.map((item) => door(item, week.week)));
     return section;
   }
 
@@ -117,9 +124,14 @@
 
       grid.replaceChildren(...weeks.map(weekBlock));
 
-      if (PREVIEW) {
-        const brand = $('.brand');
-        if (brand) brand.href = './' + PREVIEW_QUERY;
+      const brand = $('.brand');
+      if (brand && LINK_QUERY) brand.href = './' + LINK_QUERY;
+
+      /* the reader comes from a post: land on that week, not on the intro */
+      if (release.fromUrl) {
+        const target = weeks.find((w) => w.week === release.week);
+        const section = target && grid.querySelector(`[data-week="${target.week}"]`);
+        if (section) section.scrollIntoView({ block: 'start' });
       }
 
     } catch (err) {

@@ -7,7 +7,7 @@
 (() => {
   'use strict';
 
-  const { initTheme, store } = window.RQ;
+  const { initTheme, store, release } = window.RQ;
 
   const BASE = document.body.dataset.base || '';
   const CASE_ID = document.body.dataset.case || '';
@@ -966,7 +966,7 @@
         </svg>
         <p class="locked-message">This window is still wrapped.</p>
         <p class="locked-date">Opens ${escapeHtml(data.opensOn || 'later in December')}</p>
-        <a class="locked-back" href="${BASE}">Back to the calendar</a>
+        <a class="locked-back" href="${BASE}${release.query}">Back to the calendar</a>
       </div>`;
   }
 
@@ -1023,11 +1023,18 @@
 
       if (VERSION) $('#version').textContent = 'v' + VERSION;
 
-      // A case can stay wrapped: the page still exists, but shows the closed window.
-      if (data.open === false && !PREVIEW) { renderLocked(data); return; }
-      if (PREVIEW) {
-        const brand = $('.brand');
-        if (brand) brand.href = BASE + `?${PREVIEW_KEY}=1`;
+      // A case stays wrapped until the post of its week is out: the reader
+      // arrives with that week's code (?wrt, ?zhj, ?upo, ?cvn), which opens
+      // the case and the weeks before it. "open": true in the JSON opens a
+      // case for everyone, for good — the archive after Christmas.
+      const unlocked = data.open === true || PREVIEW
+        || release.isOpen(Number(data.week) || 0);
+      if (!unlocked) { renderLocked(data); return; }
+
+      const brand = $('.brand');
+      if (brand) {
+        if (PREVIEW) brand.href = BASE + `?${PREVIEW_KEY}=1`;
+        else if (release.query) brand.href = BASE + release.query;
       }
 
       if (!Array.isArray(data.series) || !data.series.length) {

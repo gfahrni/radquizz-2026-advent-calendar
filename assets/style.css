@@ -635,6 +635,10 @@ a { color: var(--accent); }
 /* ---------- 8. Home: weeks and doors ---------- */
 .weeks { display: grid; gap: 34px; }
 
+/* a reader arriving with ?wrt… is scrolled to its week: leave room for the
+   sticky chrome (58px) and its garland */
+.week { scroll-margin-top: 74px; }
+
 .week-head {
   display: flex;
   align-items: baseline;

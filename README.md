@@ -65,7 +65,8 @@ One case = one JSON file + one image folder per series.
 - `week`: 1 to 4. Cases are grouped by week on the home page; within a week, `thorax`
   is listed before `cardio`.
 - `theme`: `thorax` or `cardio` (displayed as “Thorax” / “Cardiovascular”).
-- `open`: `true` once the window has been opened; `false` keeps it wrapped.
+- `open`: `true` opens the case for everyone, permanently (the archive after Christmas);
+  `false` means the case is released only by its week's code (see below).
 - `opensOn`: the date shown on a wrapped window (e.g. `8 December`). Required when
   `open` is `false`.
 - `note`: optional short aside shown in italics just under the clinical text (`stem`) —
@@ -76,21 +77,31 @@ One case = one JSON file + one image folder per series.
 - `tab`: short text in the tab. `note`: technical line shown above the slices.
 - Series order = tab order.
 
-### Opening a window
+### Releasing a week: the three-letter code
 
-1. Add the real images to `images/<case>/<series>/`.
-2. Set `"open": true` in `content/cases/<case>.json`.
-3. `npm run build`, then commit and push.
+There is no date logic — the release is the post. Each week has a code made of three
+letters, at the very end of the URL, and nothing else:
 
-The door becomes clickable on the home page, and its page stops showing the wrapped
-window. Until then the page exists and says “This window is still wrapped.”
+| Week | Code | Link |
+|------|------|------|
+| 1 | `wrt` | `…/?wrt` |
+| 2 | `zhj` | `…/?zhj` |
+| 3 | `upo` | `…/?upo` |
+| 4 | `cvn` | `…/?cvn` |
 
-### Closing a window again
+A code opens **its week and the ones before it**: a reader arriving on `?upo` sees weeks
+1, 2 and 3, and the home page scrolls straight to week 3. With no code — a visitor who
+just types the domain — nothing is open and every door is wrapped. The code is kept in
+`localStorage`, so a reader who comes back without the link keeps his access, and it
+follows him on the case pages (`…/cases/thorax-w3/?upo`) and back to the calendar.
 
-There is no date logic: the build reads `"open"` as it is. To wrap a door that was
-published early, set `"open": false` (keep `opensOn`), then `npm run build`, commit and
-push. The door turns back into a numbered window and the case page shows “This window
-opens on …”; the images and the JSON stay in place.
+The four links are written down in `liens-linkedin.md`, outside this repository. **No
+rebuild happens when a week is released**: the site is built once, and the link does the
+work — a post can go out at any moment without a deploy.
+
+To open a case for everyone, for good (the archive after Christmas), set
+`"open": true` and rebuild; the code is then no longer needed for it. To close one
+again, set it back to `false`, keep `opensOn`, rebuild.
 
 ### Preview the whole calendar (`secret-preview-mode`)
 
